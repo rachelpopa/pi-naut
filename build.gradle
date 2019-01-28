@@ -2,10 +2,12 @@ plugins {
     id "io.spring.dependency-management" version "1.0.6.RELEASE"
     id "com.github.johnrengelman.shadow" version "4.0.2"
     id "net.ltgt.apt-eclipse" version "0.18"
-    id "net.ltgt.apt-idea" version "0.18"	
+    id "net.ltgt.apt-idea" version "0.18"
 }
 
 apply plugin:"application"
+apply plugin:"idea"
+apply plugin:"eclipse"
 apply plugin:"java"
 
 version "0.1"
@@ -36,6 +38,9 @@ dependencies {
     testCompile "junit:junit:4.12"
     testCompile "io.micronaut:micronaut-inject-java"
     testCompile "org.hamcrest:hamcrest-all:1.3"
+
+    compile "com.pi4j:pi4j-core:1.1"
+    compile "org.projectlombok:lombok:1.18.4"
 }
 
 shadowJar {
