@@ -17,6 +17,10 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven { url "https://jcenter.bintray.com" }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 dependencyManagement {
@@ -39,8 +43,9 @@ dependencies {
     testCompile "io.micronaut:micronaut-inject-java"
     testCompile "org.hamcrest:hamcrest-all:1.3"
 
-    compile "com.pi4j:pi4j-core:1.1"
+    compile "com.pi4j:pi4j-core:1.2-SNAPSHOT"
     compile "org.projectlombok:lombok:1.18.4"
+    compile name: "oled-core-2.0"
 }
 
 shadowJar {

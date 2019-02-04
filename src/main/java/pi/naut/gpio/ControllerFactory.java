@@ -3,8 +3,7 @@ package pi.naut.gpio;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
-import com.pi4j.io.gpio.GpioPinDigitalOutput;
-import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.PinPullResistance;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
 
@@ -18,9 +17,6 @@ public class ControllerFactory {
 	@Singleton
 	Map<String, GpioPinDigitalInput> inputPins = new ConcurrentHashMap<>();
 
-	@Singleton
-	Map<String, GpioPinDigitalOutput> outputPins = new ConcurrentHashMap<>();
-
 	@Bean
 	@Singleton
 	GpioController gpioController() {
@@ -29,12 +25,32 @@ public class ControllerFactory {
 		// TODO, throw exceptions here for invalid pin/board configurations
 
 		PinConfiguration.DIGITAL_INPUTS.forEach((key, value) ->
-				inputPins.computeIfAbsent(key,  e -> gpioController.provisionDigitalInputPin(value, key)));
+				inputPins.computeIfAbsent(key, e -> gpioController.provisionDigitalInputPin(value, key, PinPullResistance.PULL_UP)));
 
-		PinConfiguration.DIGITAL_OUTPUTS.forEach((key, value) ->
-				outputPins.computeIfAbsent(key, e -> gpioController.provisionDigitalOutputPin(value, key, PinState.LOW)));
 
 		return gpioController;
 	}
+
+//	@Bean
+//	@Singleton
+//	SSD1306 display() {
+//		Transport transport = new I2CTransport(RaspiPin.GPIO_15, I2CBus.BUS_1, 0x3D);
+//		SSD1306 display = new SSD1306(128, 64, transport);
+//		display.startup(false);
+//
+//		System.out.println("display factory starting...");
+//
+//		display.getGraphics().text(20, 20, new CodePage1252(), "Hello World!");
+//
+//		return display;
+//	}
+//
+//	private TimerTask setListeners(SSD1306 display) {
+//		return new TimerTask() {
+//			public void run() {
+//				display.clear();
+//			}
+//		};
+//	}
 
 }
