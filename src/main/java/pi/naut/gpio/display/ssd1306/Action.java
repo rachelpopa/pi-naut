@@ -1,0 +1,28 @@
+package pi.naut.gpio.display.ssd1306;
+
+public class Action {
+	private String name;
+
+	private boolean selected;
+
+	public  Action(String name, boolean selected) {
+		this.name = name;
+		this.selected = selected;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public boolean isSelected() {
+		return selected;
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
+}

@@ -10,13 +10,13 @@ apply plugin:"idea"
 apply plugin:"eclipse"
 apply plugin:"java"
 
-version "0.1"
+version "1.0.0-SNAPSHOT"
 group "pi.naut"
 
 repositories {
     mavenLocal()
     mavenCentral()
-    maven { url "https://jcenter.bintray.com" }
+    jcenter()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     flatDir {
         dirs 'libs'

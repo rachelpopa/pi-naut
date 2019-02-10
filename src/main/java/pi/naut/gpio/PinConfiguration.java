@@ -2,11 +2,13 @@ package pi.naut.gpio;
 
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.RaspiPin;
+import lombok.experimental.UtilityClass;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+@UtilityClass
 public class PinConfiguration {
 
 	public static final String JOYSTICK_LEFT = "JOYSTICK_LEFT";
