@@ -11,14 +11,14 @@ import static pi.naut.gpio.display.ssd1306.SSD1306Constants.*;
 
 public class SSD1306Component {
 
-	public void bufferTitle(SSD1306 controller, String title) {
+	public void titleBar(SSD1306 controller, String title) {
 		if (StringUtils.isNotEmpty(title)) {
 			controller.getGraphics().text(25, MIN_XY, new CodePage1252(), title);
 			controller.getGraphics().line(MIN_XY, TEXT_HEIGHT, MAX_X, TEXT_HEIGHT);
 		}
 	}
 
-	public void bufferVisibleItems(SSD1306 controller, List<Item> items) {
+	public void scrollableList(SSD1306 controller, List<Item> items) {
 		int bufferCount;
 		if (items.size() < 3) {
 			bufferCount = items.size();
@@ -47,7 +47,7 @@ public class SSD1306Component {
 		controller.getGraphics().line(HALF_WIDTH, BASE_HEIGHT_ARROW_UP, HALF_WIDTH + ARROW_SLOPE, BASE_HEIGHT_ARROW_UP + ARROW_SLOPE);
 	}
 
-	public void bufferActionButtons(SSD1306 controller, List<Action> actions) {
+	public void actionBar(SSD1306 controller, List<Action> actions) {
 		if (CollectionUtils.isNotEmpty(actions)) {
 			int i = 1;
 			int size = actions.size();

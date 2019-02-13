@@ -27,26 +27,8 @@ public class SSD1306Display implements Display {
 
 	@Override
 	public void addLayout(Layout layout) {
-		layout.addTo(controller);
-	}
-
-	@Override
-	public void displayLayout(Layout layout) {
-		controller.clear();
-		layout.addTo(controller);
-		controller.display();
-	}
-
-	@Override
-	public void displayTimedlayout(Layout layout, long layoutDurationInMs) {
-		byte[] buffer = controller.getBuffer();
-
-		displayLayout(layout);
-
-		Timer timer = new Timer();
-		timer.schedule(displayTimerTask(buffer), layoutDurationInMs);
-
-		controller.display();
+		layout.bufferComponentsTo(controller);
+		layout.replaceListeners();
 	}
 
 	@Override
@@ -60,7 +42,25 @@ public class SSD1306Display implements Display {
 		controller.display();
 	}
 
+	@Override
 	public void display() {
+		controller.display();
+	}
+
+	@Override
+	public void displayLayout(Layout layout) {
+		controller.clear();
+		layout.bufferComponentsTo(controller);
+		layout.replaceListeners();
+		controller.display();
+	}
+
+	@Override
+	public void displayTimedlayout(Layout layout, long layoutDurationInMs) {
+		byte[] buffer = controller.getBuffer();
+		displayLayout(layout);
+		Timer timer = new Timer();
+		timer.schedule(displayTimerTask(buffer), layoutDurationInMs);
 		controller.display();
 	}
 

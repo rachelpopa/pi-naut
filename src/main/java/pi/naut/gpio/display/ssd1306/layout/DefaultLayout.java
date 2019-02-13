@@ -1,7 +1,5 @@
 package pi.naut.gpio.display.ssd1306.layout;
 
-import lombok.Getter;
-import lombok.Setter;
 import net.fauxpark.oled.SSD1306;
 import pi.naut.gpio.display.Layout;
 import pi.naut.gpio.display.ssd1306.Action;
@@ -16,12 +14,8 @@ public class DefaultLayout implements Layout {
 
 	private String title;
 
-	@Getter
-	@Setter
 	private List<Action> actions;
 
-	@Getter
-	@Setter
 	private List<Item> items;
 
 	public DefaultLayout(String title, List<Item> items, List<Action> actions) {
@@ -31,10 +25,37 @@ public class DefaultLayout implements Layout {
 	}
 
 	@Override
-	public void addTo(SSD1306 controller) {
-		ssd1306Component.bufferTitle(controller, title);
-		ssd1306Component.bufferVisibleItems(controller, items);
-		ssd1306Component.bufferActionButtons(controller, actions);
+	public void bufferComponentsTo(SSD1306 controller) {
+		ssd1306Component.titleBar(controller, title);
+		ssd1306Component.scrollableList(controller, items);
+		ssd1306Component.actionBar(controller, actions);
+	}
+
+	@Override
+	public void replaceListeners() {}
+
+	public List<Action> getActions() {
+		return actions;
+	}
+
+	public List<Item> getItems() {
+		return items;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setActions(List<Action> actions) {
+		this.actions = actions;
+	}
+
+	public void setItems(List<Item> items) {
+		this.items = items;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 }
