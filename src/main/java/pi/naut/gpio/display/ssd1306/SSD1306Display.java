@@ -4,36 +4,31 @@ import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.i2c.I2CBus;
 import net.fauxpark.oled.SSD1306;
 import net.fauxpark.oled.transport.I2CTransport;
+import pi.naut.gpio.InputController;
 import pi.naut.gpio.display.Display;
 import pi.naut.gpio.display.Layout;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 @Singleton
 public class SSD1306Display implements Display {
 
-	private List<Action> actions;
+	@Inject
+	private InputController inputController;
 
-	private List<Item> items;
-
-	private int actionIndex = 0;
-
-	private int itemIndex = 0;
-
-	private SSD1306 controller = new SSD1306(128, 64, new I2CTransport(RaspiPin.GPIO_15, I2CBus.BUS_1, 0x3c));
+	private final SSD1306 controller = new SSD1306(128, 64, new I2CTransport(RaspiPin.GPIO_15, I2CBus.BUS_1, 0x3c));
 
 	@Override
 	public void addLayout(Layout layout) {
-		layout.bufferComponentsTo(controller);
-		layout.replaceListeners();
+		layout.bufferLayoutTo(controller);
+		applyListenerConfiguration(layout);
 	}
 
 	@Override
-	public void clear() {
-		controller.clear();
+	public void clearAll() {
 	}
 
 	@Override
@@ -50,8 +45,8 @@ public class SSD1306Display implements Display {
 	@Override
 	public void displayLayout(Layout layout) {
 		controller.clear();
-		layout.bufferComponentsTo(controller);
-		layout.replaceListeners();
+		layout.bufferLayoutTo(controller);
+		applyListenerConfiguration(layout);
 		controller.display();
 	}
 
@@ -73,36 +68,8 @@ public class SSD1306Display implements Display {
 		};
 	}
 
-	public List<Action> getActions() {
-		return actions;
-	}
-
-	public void setActions(List<Action> actions) {
-		this.actions = actions;
-	}
-
-	public List<Item> getItems() {
-		return items;
-	}
-
-	public void setItems(List<Item> items) {
-		this.items = items;
-	}
-
-	public int getActionIndex() {
-		return actionIndex;
-	}
-
-	public void setActionIndex(int actionIndex) {
-		this.actionIndex = actionIndex;
-	}
-
-	public int getItemIndex() {
-		return itemIndex;
-	}
-
-	public void setItemIndex(int itemIndex) {
-		this.itemIndex = itemIndex;
+	private void applyListenerConfiguration(Layout layout) {
+		layout.getListenerConfig().forEach((s, gpioPinListener) -> inputController.getInputPins().get(s).addListener(gpioPinListener));
 	}
 
 	public SSD1306 getController() {

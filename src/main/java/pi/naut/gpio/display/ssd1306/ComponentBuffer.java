@@ -9,7 +9,8 @@ import java.util.List;
 
 import static pi.naut.gpio.display.ssd1306.SSD1306Constants.*;
 
-public class SSD1306Component {
+// TODO, separate this into a component package
+public class ComponentBuffer {
 
 	public void titleBar(SSD1306 controller, String title) {
 		if (StringUtils.isNotEmpty(title)) {

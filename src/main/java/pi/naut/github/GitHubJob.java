@@ -28,11 +28,10 @@ public class GitHubJob {
 
 	@Inject
 	private GitHubClient gitHubClient;
-
 	@Inject
 	private SSD1306Display display;
 
-	@Scheduled(fixedRate = "60m")
+	@Scheduled(fixedRate = "1m")
 	public void playground() throws IOException {
 
 		List<PullRequest> prs = getOpenPullRequests();
@@ -44,8 +43,6 @@ public class GitHubJob {
 		for (int i = 0; i < size; i++) {
 			items.add(prs.get(i));
 		}
-
-		System.out.println(items.toString());
 
 		DefaultLayout pullRequests = new DefaultLayout(
 				"PULL REQUESTS",
@@ -59,8 +56,11 @@ public class GitHubJob {
 						new Action("DEL", false)
 				));
 
-		display.displayLayout(pullRequests);
+		display.clearDisplay();
+		display.addLayout(pullRequests);
+		display.display();
 
+		System.out.println("Refreshed!");
 	}
 
 	private List<PullRequest> getOpenPullRequests() {
