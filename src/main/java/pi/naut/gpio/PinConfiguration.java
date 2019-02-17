@@ -24,14 +24,14 @@ public class PinConfiguration {
 	static {
 		Map<String, Pin> aMap = new HashMap<>();
 
-		aMap.put(JOYSTICK_LEFT, RaspiPin.GPIO_27);
-		aMap.put(JOYSTICK_RIGHT, RaspiPin.GPIO_23);
-		aMap.put(JOYSTICK_CENTER, RaspiPin.GPIO_04);
-		aMap.put(JOYSTICK_UP, RaspiPin.GPIO_17);
-		aMap.put(JOYSTICK_DOWN, RaspiPin.GPIO_22);
+		aMap.put(JOYSTICK_LEFT, RaspiPin.GPIO_02);
+		aMap.put(JOYSTICK_RIGHT, RaspiPin.GPIO_04);
+		aMap.put(JOYSTICK_CENTER, RaspiPin.GPIO_07);
+		aMap.put(JOYSTICK_UP, RaspiPin.GPIO_00);
+		aMap.put(JOYSTICK_DOWN, RaspiPin.GPIO_03);
 
-		aMap.put(BUTTON_A, RaspiPin.GPIO_05);
-		aMap.put(BUTTON_B, RaspiPin.GPIO_06);
+		aMap.put(BUTTON_A, RaspiPin.GPIO_21);
+		aMap.put(BUTTON_B, RaspiPin.GPIO_22);
 
 		DIGITAL_INPUTS = Collections.unmodifiableMap(aMap);
 	}

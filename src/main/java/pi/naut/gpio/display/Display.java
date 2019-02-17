@@ -5,7 +5,7 @@ import java.util.TimerTask;
 public interface Display {
 
 	void addLayout(Layout layout);
-	void clear();
+	void clearAll();
 	void clearDisplay();
 	void display();
 	void displayLayout(Layout layout);

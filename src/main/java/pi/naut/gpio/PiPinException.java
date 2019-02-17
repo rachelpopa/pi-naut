@@ -7,7 +7,8 @@ import com.pi4j.system.SystemInfo;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.joining;
 
 public class PiPinException extends RuntimeException {
 
@@ -29,18 +30,16 @@ public class PiPinException extends RuntimeException {
 		}
 	}
 
-	private StringBuffer pinName(Map.Entry<String, Pin> pinConfigEntry) {
-		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append(pinConfigEntry.getValue().getName());
-		return stringBuffer;
+	private String pinName(Map.Entry<String, Pin> pinConfigEntry) {
+		return pinConfigEntry.getValue().getName();
 	}
 
 	private static String supportedPinModes(Pin pin) {
-		return pin.getSupportedPinModes().stream().map(PinMode::getName).collect(Collectors.joining(", "));
+		return pin.getSupportedPinModes().stream().map(PinMode::getName).collect(joining(", "));
 	}
 
 	private static String pinDirection(Pin pin) {
-		return pin.getSupportedPinModes().stream().map(PinMode::getDirection).map(PinDirection::getName).collect(Collectors.joining(", "));
+		return pin.getSupportedPinModes().stream().map(PinMode::getDirection).map(PinDirection::getName).collect(joining(", "));
 	}
 
 }
