@@ -18,6 +18,8 @@ repositories {
     mavenCentral()
     jcenter()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    maven { url "https://jitpack.io"}
+
     flatDir {
         dirs 'libs'
     }
@@ -45,7 +47,7 @@ dependencies {
 
     compile "com.pi4j:pi4j-core:1.2-SNAPSHOT"
     compile "org.projectlombok:lombok:1.18.4"
-    compile name: "oled-core-2.0"
+    implementation "com.github.fauxpark:oled-core:v2.0"
 }
 
 shadowJar {
