@@ -33,6 +33,10 @@ public class SSD1306Display implements Display {
 
 	@Override
 	public void clearDisplay() {
+		if (!controller.isInitialised()) {
+			System.out.println("STARTUP!");
+			controller.startup(false);
+		}
 		controller.clear();
 		controller.display();
 	}
@@ -48,10 +52,12 @@ public class SSD1306Display implements Display {
 		layout.bufferLayoutTo(controller);
 		applyListenerConfiguration(layout);
 		controller.display();
+		controller.getGraphics().circle(4, 4, 32);
 	}
 
 	@Override
 	public void displayTimedlayout(Layout layout, long layoutDurationInMs) {
+
 		byte[] buffer = controller.getBuffer();
 		displayLayout(layout);
 		Timer timer = new Timer();
