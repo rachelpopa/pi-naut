@@ -11,7 +11,7 @@ public class DecrementActionListener implements GpioPinListenerDigital {
 
 	public DecrementActionListener(DefaultLayout defaultLayout) {
 		this.defaultLayout = defaultLayout;
-		this.actionSize = defaultLayout.getSelectableItems().size();
+		this.actionSize = defaultLayout.getPullRequests().size();
 	}
 
 	@Override

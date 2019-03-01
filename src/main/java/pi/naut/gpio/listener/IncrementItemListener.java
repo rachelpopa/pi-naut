@@ -11,7 +11,7 @@ public class IncrementItemListener implements GpioPinListenerDigital {
 
 	public IncrementItemListener(DefaultLayout defaultLayout) {
 		this.defaultLayout = defaultLayout;
-		this.itemSize = defaultLayout.getSelectableActions().size();
+		this.itemSize = defaultLayout.getActions().size();
 	}
 
 	@Override

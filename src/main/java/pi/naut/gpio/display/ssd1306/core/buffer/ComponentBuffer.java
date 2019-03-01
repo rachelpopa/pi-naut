@@ -4,7 +4,8 @@ import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.core.util.StringUtils;
 import net.fauxpark.oled.SSD1306;
 import net.fauxpark.oled.font.CodePage1252;
-import pi.naut.gpio.display.ssd1306.core.component.wrapper.SelectableComponent;
+import pi.naut.github.model.PullRequest;
+import pi.naut.gpio.display.ssd1306.core.component.Action;
 
 import java.util.List;
 
@@ -20,23 +21,33 @@ public class ComponentBuffer {
 		}
 	}
 
-	public void scrollableList(SSD1306 controller, List<SelectableComponent> selectableComponents) {
+	public void scrollableList(SSD1306 controller, List<PullRequest> pullRequests) {
+
 		int bufferCount;
-		if (selectableComponents.size() < 3) {
-			bufferCount = selectableComponents.size();
+
+		if (pullRequests.size() < 3) {
+			bufferCount = pullRequests.size();
 		} else {
 			bufferCount = 3;
 		}
 
-		// TODO, add logic to automatically hide/show arrows
-		bufferUpArrow(controller);
-		for (int i = 0; i < bufferCount; i++) {
-			controller.getGraphics().text((RADIUS_RADIO_SELECTED * 2) + (PADDING * 2), TEXT_HEIGHT + (TEXT_HEIGHT * (i + 1)) + 1, new CodePage1252(), selectableComponents.get(i).getLabel());
-			if (selectableComponents.get(i).isSelected()) {
-				controller.getGraphics().circle(RADIUS_RADIO_SELECTED, (TEXT_HEIGHT + (PADDING * 2)) + (TEXT_HEIGHT * (i + 1)), 1);
+		if (bufferCount > 0) {
+			// TODO, add logic to automatically hide/show arrows
+			bufferUpArrow(controller);
+			for (int i = 0; i < bufferCount; i++) {
+				controller.getGraphics().text(
+						(RADIUS_RADIO_SELECTED * 2) + (PADDING * 2),
+						TEXT_HEIGHT + (TEXT_HEIGHT * (i + 1)) + 1,
+						new CodePage1252(),     // TODO, use a monospaced font
+						pullRequests.get(i).getTitle()   // TODO, generalize this
+				);
+				if (pullRequests.get(i).isSelected()) {
+					controller.getGraphics().circle(RADIUS_RADIO_SELECTED, (TEXT_HEIGHT + (PADDING * 2)) + (TEXT_HEIGHT * (i + 1)), 1);
+				}
 			}
+			bufferDownArrow(controller);
 		}
-		bufferDownArrow(controller);
+
 	}
 
 	public void bufferDownArrow(SSD1306 controller) {
@@ -49,13 +60,13 @@ public class ComponentBuffer {
 		controller.getGraphics().line(HALF_WIDTH, BASE_HEIGHT_ARROW_UP, HALF_WIDTH + ARROW_SLOPE, BASE_HEIGHT_ARROW_UP + ARROW_SLOPE);
 	}
 
-	public void actionBar(SSD1306 controller, List<SelectableComponent> actions) {
+	public void actionBar(SSD1306 controller, List<Action> actions) {
 		if (CollectionUtils.isNotEmpty(actions)) {
 			int i = 1;
 			int size = actions.size();
 			int buttonWidth = (MAX_WIDTH / size);
 
-			for (SelectableComponent action : actions) {
+			for (Action action : actions) {
 				// button box
 				controller.getGraphics().rectangle(
 						(buttonWidth * (i - 1)) + (i - 1),
@@ -70,7 +81,7 @@ public class ComponentBuffer {
 						(buttonWidth * (i - 1)) + (i - 1) + PADDING,
 						MAX_HEIGHT - FONT_HEIGHT - PADDING,
 						new CodePage1252(),
-						action.getLabel()
+						action.getLongDescription()  // TODO, make this responsive
 				);
 
 				// selected indicator

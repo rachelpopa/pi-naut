@@ -1,12 +1,12 @@
 package pi.naut.gpio.display.ssd1306.core.component.wrapper;
 
-public class SelectableComponent {
+public class Selectable {
 
 	private boolean selected = false;
 
-	public SelectableComponent() {}
+	public Selectable() {}
 
-	public SelectableComponent(Boolean selected) {
+	public Selectable(Boolean selected) {
 		this.selected = selected;
 	}
 

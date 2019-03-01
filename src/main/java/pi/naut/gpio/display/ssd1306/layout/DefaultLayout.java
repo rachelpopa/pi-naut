@@ -3,10 +3,10 @@ package pi.naut.gpio.display.ssd1306.layout;
 import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
 import net.fauxpark.oled.SSD1306;
+import pi.naut.github.model.PullRequest;
 import pi.naut.gpio.display.Layout;
-import pi.naut.gpio.display.ssd1306.core.Action;
-import pi.naut.gpio.display.ssd1306.core.component.wrapper.SelectableComponent;
 import pi.naut.gpio.display.ssd1306.core.buffer.ComponentBuffer;
+import pi.naut.gpio.display.ssd1306.core.component.Action;
 import pi.naut.gpio.listener.ActionListener;
 import pi.naut.gpio.listener.ButtonListener;
 import pi.naut.gpio.listener.ChangeLayoutListener;
@@ -27,22 +27,22 @@ public class DefaultLayout implements Layout {
 
 	private String title;
 
-	private List<Action> actions;
+	private List<PullRequest> pullRequests;
 	private int actionIndex = 0;
 
-	private List<SelectableComponent> selectableComponents;
+	private List<Action> actions;
 	private int itemIndex = 0;
 
-	public DefaultLayout(String title, List<SelectableComponent> selectableComponents, List<Action> actions) {
+	public DefaultLayout(String title, List<Action> actions, List<PullRequest> pullRequests) {
 		this.title = title;
-		this.selectableComponents = selectableComponents;
 		this.actions = actions;
+		this.pullRequests = pullRequests;
 	}
 
 	@Override
 	public void bufferLayoutTo(SSD1306 displayController) {
 		componentBuffer.titleBar(displayController, title);
-		componentBuffer.scrollableList(displayController, selectableComponents);
+		componentBuffer.scrollableList(displayController, pullRequests);
 		componentBuffer.actionBar(displayController, actions);
 	}
 
@@ -67,24 +67,24 @@ public class DefaultLayout implements Layout {
 		return new HashMap<>();
 	}
 
-	public List<Action> getActions() {
-		return actions;
+	public List<PullRequest> getPullRequests() {
+		return pullRequests;
 	}
 
-	public List<SelectableComponent> getSelectableComponents() {
-		return selectableComponents;
+	public List<Action> getActions() {
+		return actions;
 	}
 
 	public String getTitle() {
 		return title;
 	}
 
-	public void setActions(List<Action> actions) {
-		this.actions = actions;
+	public void setPullRequests(List<PullRequest> pullRequests) {
+		this.pullRequests = pullRequests;
 	}
 
-	public void setSelectableComponents(List<SelectableComponent> selectableComponents) {
-		this.selectableComponents = selectableComponents;
+	public void setActions(List<Action> actions) {
+		this.actions = actions;
 	}
 
 	public void setTitle(String title) {
