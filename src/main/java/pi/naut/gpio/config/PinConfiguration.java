@@ -1,4 +1,4 @@
-package pi.naut.gpio;
+package pi.naut.gpio.config;
 
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.RaspiPin;

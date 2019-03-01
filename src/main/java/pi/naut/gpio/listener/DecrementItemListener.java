@@ -11,12 +11,12 @@ public class DecrementItemListener implements GpioPinListenerDigital {
 
 	public DecrementItemListener(DefaultLayout defaultLayout) {
 		this.defaultLayout = defaultLayout;
-		this.itemSize = defaultLayout.getItems().size();
+		this.itemSize = defaultLayout.getSelectableActions().size();
 	}
 
 	@Override
 	public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-		System.out.println("Decrement Item index and re-display layout");
+		System.out.println("Decrement Selectable index and re-display layout");
 	}
 
 }

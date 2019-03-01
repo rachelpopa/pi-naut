@@ -11,7 +11,7 @@ public class ActionListener implements GpioPinListenerDigital {
 
 	public ActionListener(DefaultLayout defaultLayout) {
 		this.defaultLayout = defaultLayout;
-		this.actionSize = defaultLayout.getActions().size();
+		this.actionSize = defaultLayout.getSelectableItems().size();
 	}
 
 	@Override

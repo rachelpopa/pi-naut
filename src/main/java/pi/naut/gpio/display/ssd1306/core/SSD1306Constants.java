@@ -1,4 +1,4 @@
-package pi.naut.gpio.display.ssd1306;
+package pi.naut.gpio.display.ssd1306.core;
 
 import lombok.experimental.UtilityClass;
 

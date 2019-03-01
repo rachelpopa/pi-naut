@@ -8,9 +8,8 @@ import pi.naut.github.model.EventType;
 import pi.naut.github.model.PullRequest;
 import pi.naut.github.model.PullRequestEvent;
 import pi.naut.github.model.StateType;
-import pi.naut.gpio.display.ssd1306.Action;
-import pi.naut.gpio.display.ssd1306.Item;
 import pi.naut.gpio.display.ssd1306.SSD1306Display;
+import pi.naut.gpio.display.ssd1306.core.component.Action;
 import pi.naut.gpio.display.ssd1306.layout.DefaultLayout;
 
 import javax.inject.Inject;
@@ -44,17 +43,11 @@ public class GitHubJob {
 			items.add(prs.get(i));
 		}
 
-		DefaultLayout pullRequests = new DefaultLayout(
-				"PULL REQUESTS",
-				items
-						.stream()
-						.map(pr -> new Item(pr.getTitle(), true))
-						.collect(toList()),
-				asList(
-						new Action("DET", false),
-						new Action("DIS", true),
-						new Action("DEL", false)
-				));
+		Action detailsAction = new Action("DETAILS", "DET", "De", f -> null);
+
+		Action dismissAction = new Action("DISMISS", "DIS", "Di", f -> null);
+
+		DefaultLayout pullRequests = new DefaultLayout("PULL REQUESTS", asList(detailsAction, dismissAction), items);
 
 		display.clearDisplay();
 		display.addLayout(pullRequests);

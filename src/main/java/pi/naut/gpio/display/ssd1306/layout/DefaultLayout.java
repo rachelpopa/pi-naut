@@ -4,9 +4,9 @@ import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
 import net.fauxpark.oled.SSD1306;
 import pi.naut.gpio.display.Layout;
-import pi.naut.gpio.display.ssd1306.Action;
-import pi.naut.gpio.display.ssd1306.ComponentBuffer;
-import pi.naut.gpio.display.ssd1306.Item;
+import pi.naut.gpio.display.ssd1306.core.Action;
+import pi.naut.gpio.display.ssd1306.core.component.wrapper.SelectableComponent;
+import pi.naut.gpio.display.ssd1306.core.buffer.ComponentBuffer;
 import pi.naut.gpio.listener.ActionListener;
 import pi.naut.gpio.listener.ButtonListener;
 import pi.naut.gpio.listener.ChangeLayoutListener;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static pi.naut.gpio.PinConfiguration.*;
+import static pi.naut.gpio.config.PinConfiguration.*;
 
 public class DefaultLayout implements Layout {
 
@@ -30,20 +30,19 @@ public class DefaultLayout implements Layout {
 	private List<Action> actions;
 	private int actionIndex = 0;
 
-	private List<Item> items;
+	private List<SelectableComponent> selectableComponents;
 	private int itemIndex = 0;
 
-
-	public DefaultLayout(String title, List<Item> items, List<Action> actions) {
+	public DefaultLayout(String title, List<SelectableComponent> selectableComponents, List<Action> actions) {
 		this.title = title;
-		this.items = items;
+		this.selectableComponents = selectableComponents;
 		this.actions = actions;
 	}
 
 	@Override
 	public void bufferLayoutTo(SSD1306 displayController) {
 		componentBuffer.titleBar(displayController, title);
-		componentBuffer.scrollableList(displayController, items);
+		componentBuffer.scrollableList(displayController, selectableComponents);
 		componentBuffer.actionBar(displayController, actions);
 	}
 
@@ -72,8 +71,8 @@ public class DefaultLayout implements Layout {
 		return actions;
 	}
 
-	public List<Item> getItems() {
-		return items;
+	public List<SelectableComponent> getSelectableComponents() {
+		return selectableComponents;
 	}
 
 	public String getTitle() {
@@ -84,8 +83,8 @@ public class DefaultLayout implements Layout {
 		this.actions = actions;
 	}
 
-	public void setItems(List<Item> items) {
-		this.items = items;
+	public void setSelectableComponents(List<SelectableComponent> selectableComponents) {
+		this.selectableComponents = selectableComponents;
 	}
 
 	public void setTitle(String title) {

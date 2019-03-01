@@ -4,7 +4,7 @@ import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.i2c.I2CBus;
 import net.fauxpark.oled.SSD1306;
 import net.fauxpark.oled.transport.I2CTransport;
-import pi.naut.gpio.InputController;
+import pi.naut.gpio.config.InputController;
 import pi.naut.gpio.display.Display;
 import pi.naut.gpio.display.Layout;
 

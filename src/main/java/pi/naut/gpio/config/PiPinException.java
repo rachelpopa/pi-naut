@@ -1,4 +1,4 @@
-package pi.naut.gpio;
+package pi.naut.gpio.config;
 
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinDirection;
@@ -10,6 +10,7 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.joining;
 
+// TODO, finish testing this and use it
 public class PiPinException extends RuntimeException {
 
 	private PiPinException(Map.Entry<String, Pin> pinConfigEntry) {
