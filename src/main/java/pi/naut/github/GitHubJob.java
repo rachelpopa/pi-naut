@@ -32,6 +32,7 @@ public class GitHubJob {
 	@Scheduled(fixedRate = "1m")
 	public void uodatePullRequests() throws IOException {
 		pullRequestLayout.setPullRequests(getOpenPullRequests());
+		// TODO, refresh display
 		System.out.println("--> Pull Requests Refreshed");
 	}
 

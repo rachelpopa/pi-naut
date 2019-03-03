@@ -7,7 +7,12 @@ import net.fauxpark.oled.font.CodePage1252;
 import pi.naut.gpio.display.ssd1306.core.component.Action;
 import pi.naut.gpio.display.ssd1306.core.component.wrapper.Selectable;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Objects;
 
 import static pi.naut.gpio.display.ssd1306.core.SSD1306Constants.*;
 
@@ -96,6 +101,19 @@ public class ComponentBuffer {
 				i++;
 			}
 		}
+	}
+
+	public void startupScreen(SSD1306 displayController, String user) {
+		displayController.getGraphics().text(21, MIN_XY, new CodePage1252(), "WELCOME " + user.toUpperCase());
+		try {
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			InputStream resourceAsStream = classLoader.getResourceAsStream("raspberry.png");
+			BufferedImage bufferedImage = ImageIO.read(Objects.requireNonNull(resourceAsStream));
+			displayController.getGraphics().image(bufferedImage, 48, 12 , 32, 40);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		displayController.getGraphics().text(25, MAX_Y - FONT_HEIGHT, new CodePage1252(), "PRESS JOYSTICK");
 	}
 
 }

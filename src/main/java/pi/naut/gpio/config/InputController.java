@@ -18,10 +18,10 @@ public class InputController {
 	private Map<String, GpioPinDigitalInput> inputPins = new ConcurrentHashMap<>();
 
 	InputController() {
-		PinConfiguration.DIGITAL_INPUTS.forEach((key, value) ->
+		PinConfiguration.DIGITAL_INPUT_PINS.forEach((key, value) ->
 				inputPins.computeIfAbsent(key, e -> {
 					GpioPinDigitalInput gpioPinDigitalInput = gpioController.provisionDigitalInputPin(value, key, PinPullResistance.PULL_UP);
-					gpioPinDigitalInput.setShutdownOptions(false);   // TODO, not sure if I should be specifying other shutdown options..
+					gpioPinDigitalInput.setShutdownOptions(false);
 					return gpioPinDigitalInput;
 				}));
 	}

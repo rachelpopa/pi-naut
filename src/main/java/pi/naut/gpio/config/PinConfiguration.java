@@ -20,7 +20,7 @@ public class PinConfiguration {
 	public static final String BUTTON_A = "BUTTON_A";
 	public static final String BUTTON_B = "BUTTON_B";
 
-	public static final Map<String, Pin> DIGITAL_INPUTS;
+	public static final Map<String, Pin> DIGITAL_INPUT_PINS;
 	static {
 		Map<String, Pin> aMap = new HashMap<>();
 
@@ -33,7 +33,7 @@ public class PinConfiguration {
 		aMap.put(BUTTON_A, RaspiPin.GPIO_21);
 		aMap.put(BUTTON_B, RaspiPin.GPIO_22);
 
-		DIGITAL_INPUTS = Collections.unmodifiableMap(aMap);
+		DIGITAL_INPUT_PINS = Collections.unmodifiableMap(aMap);
 	}
 
 }

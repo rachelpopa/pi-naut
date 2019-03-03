@@ -2,6 +2,7 @@ package pi.naut.gpio.display.ssd1306.layout;
 
 import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
+import io.micronaut.context.annotation.Value;
 import net.fauxpark.oled.SSD1306;
 import pi.naut.gpio.display.Layout;
 import pi.naut.gpio.display.ssd1306.core.buffer.ComponentBuffer;
@@ -15,11 +16,12 @@ public class WelcomeLayout implements Layout {
 
 	private ComponentBuffer componentBuffer = new ComponentBuffer();
 
-	private static final String title = "WELCOME";
+	@Value("${github.user}")
+	private String userName;
 
 	@Override
 	public void bufferComponentsTo(SSD1306 displayController) {
-		componentBuffer.titleBar(displayController, title);
+		componentBuffer.startupScreen(displayController, userName);
 	}
 
 	@Override
