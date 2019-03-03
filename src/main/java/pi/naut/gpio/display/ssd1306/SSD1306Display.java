@@ -4,6 +4,8 @@ import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.io.i2c.I2CBus;
+import io.micronaut.discovery.event.ServiceShutdownEvent;
+import io.micronaut.runtime.event.annotation.EventListener;
 import net.fauxpark.oled.SSD1306;
 import net.fauxpark.oled.transport.I2CTransport;
 import pi.naut.gpio.config.InputController;
@@ -49,6 +51,12 @@ public class SSD1306Display implements Display {
 		clearDisplay();
 		applyDisplayEvents();
 		displayLayout(welcomeLayout);
+	}
+
+	@EventListener
+	void onShutdown(ServiceShutdownEvent event) {
+		clearDisplay();
+		controller.shutdown();
 	}
 
 	@Override
