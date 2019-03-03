@@ -2,16 +2,16 @@ package pi.naut.gpio.listener;
 
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
-import pi.naut.gpio.display.ssd1306.layout.DefaultLayout;
+import pi.naut.gpio.display.ssd1306.layout.PullRequestLayout;
 
 public class IncrementItemListener implements GpioPinListenerDigital {
 
-	private DefaultLayout defaultLayout;
+	private PullRequestLayout pullRequestLayout;
 	private long itemSize;
 
-	public IncrementItemListener(DefaultLayout defaultLayout) {
-		this.defaultLayout = defaultLayout;
-		this.itemSize = defaultLayout.getActions().size();
+	public IncrementItemListener(PullRequestLayout pullRequestLayout) {
+		this.pullRequestLayout = pullRequestLayout;
+		this.itemSize = pullRequestLayout.getActions().size();
 	}
 
 	@Override

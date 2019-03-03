@@ -4,8 +4,8 @@ import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.core.util.StringUtils;
 import net.fauxpark.oled.SSD1306;
 import net.fauxpark.oled.font.CodePage1252;
-import pi.naut.github.model.PullRequest;
 import pi.naut.gpio.display.ssd1306.core.component.Action;
+import pi.naut.gpio.display.ssd1306.core.component.wrapper.Selectable;
 
 import java.util.List;
 
@@ -21,31 +21,31 @@ public class ComponentBuffer {
 		}
 	}
 
-	public void scrollableList(SSD1306 controller, List<PullRequest> pullRequests) {
+	public void scrollableList(SSD1306 controller, List<Selectable> selectables) {
 
 		int bufferCount;
 
-		if (pullRequests.size() < 3) {
-			bufferCount = pullRequests.size();
+		if (selectables.size() < 3) {
+			bufferCount = selectables.size();
 		} else {
 			bufferCount = 3;
 		}
 
 		if (bufferCount > 0) {
 			// TODO, add logic to automatically hide/show arrows
-			bufferUpArrow(controller);
-			for (int i = 0; i < bufferCount; i++) {
+//			bufferUpArrow(controller);
+			for (int i = 0; i < selectables.size(); i++) {
 				controller.getGraphics().text(
 						(RADIUS_RADIO_SELECTED * 2) + (PADDING * 2),
 						TEXT_HEIGHT + (TEXT_HEIGHT * (i + 1)) + 1,
 						new CodePage1252(),     // TODO, use a monospaced font
-						pullRequests.get(i).getTitle()   // TODO, generalize this
+						selectables.get(i).toString()
 				);
-				if (pullRequests.get(i).isSelected()) {
+				if (selectables.get(i).isSelected()) {
 					controller.getGraphics().circle(RADIUS_RADIO_SELECTED, (TEXT_HEIGHT + (PADDING * 2)) + (TEXT_HEIGHT * (i + 1)), 1);
 				}
 			}
-			bufferDownArrow(controller);
+//			bufferDownArrow(controller);
 		}
 
 	}

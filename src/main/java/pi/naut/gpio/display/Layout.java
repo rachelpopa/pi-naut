@@ -7,7 +7,7 @@ import net.fauxpark.oled.SSD1306;
 import java.util.Map;
 
 public interface Layout {
-	void bufferLayoutTo(SSD1306 displayController);
-	Map<String, GpioPinListener> getListenerConfig();
-	Map<String, GpioTrigger> getTriggerConfig();
+	void bufferComponentsTo(SSD1306 displayController);
+	Map<String, GpioPinListener> getListenerConfiguration();
+	Map<String, GpioTrigger> getTriggerConfiguration();
 }

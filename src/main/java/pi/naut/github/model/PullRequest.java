@@ -79,4 +79,9 @@ public class PullRequest extends Selectable {
 	public void setMergableState(String mergableState) {
 		this.mergableState = mergableState;
 	}
+
+	@Override
+	public String toString() {
+		return title;
+	}
 }
