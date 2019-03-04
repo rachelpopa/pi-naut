@@ -37,6 +37,13 @@ public class CircularList<T> implements Iterable<T> {
 			}
 
 			@Override
+			public T current() {
+				pos = nextIndex();
+				pos = previousIndex();
+				return l.get(pos);
+			}
+
+			@Override
 			public int nextIndex() {
 				if(pos==l.size()-1) {
 					return 0;
@@ -53,6 +60,7 @@ public class CircularList<T> implements Iterable<T> {
 					return pos-1;
 				}
 			}
+
 		};
 	}
 }

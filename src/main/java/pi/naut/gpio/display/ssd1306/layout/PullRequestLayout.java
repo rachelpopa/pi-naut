@@ -3,6 +3,7 @@ package pi.naut.gpio.display.ssd1306.layout;
 import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
 import net.fauxpark.oled.SSD1306;
+import pi.naut.github.GithubService;
 import pi.naut.github.model.PullRequest;
 import pi.naut.gpio.display.Layout;
 import pi.naut.gpio.display.ssd1306.core.buffer.ComponentBuffer;
@@ -15,18 +16,22 @@ import pi.naut.gpio.listener.DecrementItemListener;
 import pi.naut.gpio.listener.IncrementActionListener;
 import pi.naut.gpio.listener.IncrementItemListener;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static pi.naut.gpio.config.PinConfiguration.*;
 
 @Singleton
 public class PullRequestLayout implements Layout {
+
+	@Inject
+	private GithubService githubService;
 
 	private ComponentBuffer componentBuffer = new ComponentBuffer();
 
@@ -35,14 +40,20 @@ public class PullRequestLayout implements Layout {
 	private List<PullRequest> pullRequests = new ArrayList<>();
 	private int prIndex = 0;
 
-	private List<Action> actions = asList(
-			new Action("DETAILS", "DET", "De", f -> null),
-			new Action("DISMISS", "DIS", "Di", f -> null)
-	);
+	private List<Action> actions = new ArrayList<>();
 	private int actionIndex = 0;
 
 	@Override
-	public void bufferComponentsTo(SSD1306 displayController) {
+	@PostConstruct
+	public void init() {
+		Action details = new Action("DETAILS", "DET", "De", f -> null);
+		details.setSelected(true);
+		this.actions.add(details);
+		this.pullRequests = githubService.getOpenPullRequests();
+	}
+
+	@Override
+	public void bufferTo(SSD1306 displayController) {
 		componentBuffer.titleBar(displayController, TITLE);
 		componentBuffer.scrollableList(displayController, pullRequests
 				.stream()

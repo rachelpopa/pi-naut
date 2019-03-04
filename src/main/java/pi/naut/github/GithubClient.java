@@ -9,10 +9,10 @@ import pi.naut.github.model.User;
 
 import java.util.List;
 
-@Client(GitHubClientConfiguration.GITHUB_API_URL)
+@Client(GithubClientConfiguration.GITHUB_API_URL)
 @Header(name = "User-Agent", value = "${github.user}")
 @Header(name = "Authorization", value = "token ${github.token}")
-public interface GitHubClient {
+public interface GithubClient {
 
     @Get("graphql")
     String queryGraph(String query);

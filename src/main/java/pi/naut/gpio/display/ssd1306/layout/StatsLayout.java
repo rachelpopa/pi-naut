@@ -21,7 +21,11 @@ public class StatsLayout implements Layout {
 	private static final String title = "RUNTIME STATS";
 
 	@Override
-	public void bufferComponentsTo(SSD1306 displayController) {
+	public void init() {
+	}
+
+	@Override
+	public void bufferTo(SSD1306 displayController) {
 		componentBuffer.titleBar(displayController, title);
 		componentBuffer.scrollableList(displayController, getStats());
 	}
@@ -41,7 +45,7 @@ public class StatsLayout implements Layout {
 
 		stats.add(new Selectable("Cores: " + Runtime.getRuntime().availableProcessors()));
 		stats.add(new Selectable("Free mem: " + Runtime.getRuntime().freeMemory()));
-		stats.add(new Selectable("Max mem: " + (Runtime.getRuntime().maxMemory() == Long.MAX_VALUE ? "no limit" : Runtime.getRuntime().maxMemory())));
+		stats.add(new Selectable("Max mem: " + Runtime.getRuntime().maxMemory()));
 		stats.add(new Selectable("Tot mem: " + Runtime.getRuntime().totalMemory()));
 
 		return stats;

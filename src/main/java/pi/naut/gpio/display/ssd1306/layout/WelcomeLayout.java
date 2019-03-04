@@ -20,7 +20,10 @@ public class WelcomeLayout implements Layout {
 	private String userName;
 
 	@Override
-	public void bufferComponentsTo(SSD1306 displayController) {
+	public void init() {}
+
+	@Override
+	public void bufferTo(SSD1306 displayController) {
 		componentBuffer.startupScreen(displayController, userName);
 	}
 
@@ -30,9 +33,6 @@ public class WelcomeLayout implements Layout {
 	}
 
 	@Override
-	public Map<String, GpioTrigger> getTriggerConfiguration() {
-		Map<String, GpioTrigger> triggerMap = new HashMap<>();
-		return triggerMap;
-	}
+	public Map<String, GpioTrigger> getTriggerConfiguration() { return new HashMap<>(); }
 
 }

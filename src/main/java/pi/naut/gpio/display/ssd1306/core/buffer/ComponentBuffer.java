@@ -4,6 +4,7 @@ import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.core.util.StringUtils;
 import net.fauxpark.oled.SSD1306;
 import net.fauxpark.oled.font.CodePage1252;
+import pi.naut.github.model.User;
 import pi.naut.gpio.display.ssd1306.core.component.Action;
 import pi.naut.gpio.display.ssd1306.core.component.wrapper.Selectable;
 
@@ -114,6 +115,15 @@ public class ComponentBuffer {
 			e.printStackTrace();
 		}
 		displayController.getGraphics().text(25, MAX_Y - FONT_HEIGHT, new CodePage1252(), "PRESS JOYSTICK");
+	}
+
+	public void gitHubAvatar(SSD1306 displayController, User user, BufferedImage userAvatar) {
+		displayController.getGraphics().text(45, TEXT_HEIGHT * 3, new CodePage1252(), user.getName());
+		try {
+			displayController.getGraphics().image(userAvatar, 0, 20 , 40, 40);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

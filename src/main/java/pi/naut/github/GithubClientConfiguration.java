@@ -4,10 +4,10 @@ import io.micronaut.context.annotation.ConfigurationProperties;
 import lombok.Getter;
 import lombok.Setter;
 
-import static pi.naut.github.GitHubClientConfiguration.PREFIX;
+import static pi.naut.github.GithubClientConfiguration.PREFIX;
 
 @ConfigurationProperties(PREFIX)
-public class GitHubClientConfiguration {
+public class GithubClientConfiguration {
 
 	static final String PREFIX = "github";
 	static final String GITHUB_API_URL   = "https://api.github.com/";

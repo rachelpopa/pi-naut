@@ -1,42 +1,26 @@
 package pi.naut.github;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.micronaut.context.annotation.Requires;
-import io.micronaut.scheduling.annotation.Scheduled;
 import pi.naut.github.model.ActionType;
 import pi.naut.github.model.EventType;
 import pi.naut.github.model.PullRequest;
 import pi.naut.github.model.PullRequestEvent;
 import pi.naut.github.model.StateType;
-import pi.naut.gpio.display.ssd1306.SSD1306Display;
-import pi.naut.gpio.display.ssd1306.layout.PullRequestLayout;
+import pi.naut.github.model.User;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.io.IOException;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
 @Singleton
-@Requires(beans = GitHubClient.class)
-public class GitHubJob {
+public class GithubService {
 
 	@Inject
-	private GitHubClient gitHubClient;
-	@Inject
-	private PullRequestLayout pullRequestLayout;
-	@Inject
-	private SSD1306Display display;
+	private GithubClient gitHubClient;
 
-	@Scheduled(fixedRate = "1m")
-	public void uodatePullRequests() throws IOException {
-		pullRequestLayout.setPullRequests(getOpenPullRequests());
-		// TODO, refresh display
-		System.out.println("--> Pull Requests Refreshed");
-	}
-
-	private List<PullRequest> getOpenPullRequests() {
+	public List<PullRequest> getOpenPullRequests() {
 		return gitHubClient.getCurrentUserEvents()
 				.stream()
 				.filter(event -> event.getType().equals(EventType.PullRequestEvent.name()))
@@ -45,6 +29,10 @@ public class GitHubJob {
 				.map(pre -> pre.getPullRequest())
 				.filter(pr -> pr.getState() == StateType.open)
 				.collect(toList());
+	}
+
+	public User getCurrentUser() {
+		return gitHubClient.getCurrentUser();
 	}
 
 }

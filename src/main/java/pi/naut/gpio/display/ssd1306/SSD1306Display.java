@@ -6,12 +6,14 @@ import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.io.i2c.I2CBus;
 import io.micronaut.discovery.event.ServiceShutdownEvent;
 import io.micronaut.runtime.event.annotation.EventListener;
+import io.micronaut.scheduling.annotation.Scheduled;
 import net.fauxpark.oled.SSD1306;
 import net.fauxpark.oled.transport.I2CTransport;
 import pi.naut.gpio.config.InputController;
 import pi.naut.gpio.config.PinConfiguration;
 import pi.naut.gpio.display.Display;
 import pi.naut.gpio.display.Layout;
+import pi.naut.gpio.display.ssd1306.layout.GithubUserLayout;
 import pi.naut.gpio.display.ssd1306.layout.PullRequestLayout;
 import pi.naut.gpio.display.ssd1306.layout.StatsLayout;
 import pi.naut.gpio.display.ssd1306.layout.WelcomeLayout;
@@ -36,27 +38,38 @@ public class SSD1306Display implements Display {
 
 	// Inject Layouts
 	@Inject
-	private WelcomeLayout welcomeLayout;
+	private GithubUserLayout githubUserLayout;
 	@Inject
 	private PullRequestLayout pullRequestLayout;
 	@Inject
 	private StatsLayout statsLayout;
+	@Inject
+	private WelcomeLayout welcomeLayout;
 
 	private static final SSD1306 controller = new SSD1306(128, 64, new I2CTransport(RaspiPin.GPIO_15, I2CBus.BUS_1, 0x3c));
 	private CircularIterator<Layout> parentLayouts;
 
 	@PostConstruct
 	private void init() {
-		parentLayouts = new CircularList<>(asList(pullRequestLayout, statsLayout)).iterator();
+		parentLayouts = new CircularList<>(asList(
+				githubUserLayout,
+				statsLayout,
+				pullRequestLayout
+				)).iterator();
 		clearDisplay();
-		applyDisplayEvents();
 		displayLayout(welcomeLayout);
+		applyDisplayEvents();
 	}
 
 	@EventListener
-	void onShutdown(ServiceShutdownEvent event) {
+	void teardown(ServiceShutdownEvent event) {
 		clearDisplay();
 		controller.shutdown();
+	}
+
+	@Scheduled(initialDelay = "25s", fixedRate = "2s")
+	void refresh() {
+		redisplayCurrentLayout();
 	}
 
 	@Override
@@ -72,8 +85,8 @@ public class SSD1306Display implements Display {
 	@Override
 	public void displayLayout(Layout layout) {
 		controller.clear();
-		layout.bufferComponentsTo(controller);
-		applyLayoutEvents(layout);
+		layout.bufferTo(controller);
+		reapplyLayoutEvents(layout);
 		controller.display();
 	}
 
@@ -94,7 +107,7 @@ public class SSD1306Display implements Display {
 		};
 	}
 
-	private void applyLayoutEvents(Layout layout) {
+	private void reapplyLayoutEvents(Layout layout) {
 		Map<String, GpioPinDigitalInput> pins = inputController.getInputPins().entrySet()
 				.stream()
 				.filter(pin -> !PinConfiguration.JOYSTICK_CENTER.equals(pin.getKey()))
@@ -110,10 +123,16 @@ public class SSD1306Display implements Display {
 
 	private void applyDisplayEvents() {
 		inputController.getInputPins().get(PinConfiguration.JOYSTICK_CENTER).addListener((GpioPinListenerDigital) event -> {
-			if (event.getState().isLow()) {
+			if (event.getState().isHigh()) {
 				displayLayout(parentLayouts.next());
 			}
 		});
+	}
+
+	private void redisplayCurrentLayout() {
+		controller.clear();
+		parentLayouts.current().bufferTo(controller);
+		controller.display();
 	}
 
 }
