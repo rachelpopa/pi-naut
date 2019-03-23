@@ -12,16 +12,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
-public class InputController {
+public class DigitalInputController {
 
-	private GpioController gpioController = GpioFactory.getInstance();
+	private final GpioController gpioController = GpioFactory.getInstance();
 	private Map<String, GpioPinDigitalInput> inputPins = new ConcurrentHashMap<>();
 
-	InputController() {
+	DigitalInputController() {
 		PinConfiguration.DIGITAL_INPUT_PINS.forEach((key, value) ->
 				inputPins.computeIfAbsent(key, e -> {
 					GpioPinDigitalInput gpioPinDigitalInput = gpioController.provisionDigitalInputPin(value, key, PinPullResistance.PULL_UP);
-					gpioPinDigitalInput.setShutdownOptions(false);
+					gpioPinDigitalInput.setShutdownOptions(false); // FIXME, should this be false (exported)
 					return gpioPinDigitalInput;
 				}));
 	}
@@ -29,10 +29,6 @@ public class InputController {
 	@EventListener
 	void onShutdown(ServiceShutdownEvent event) {
 		gpioController.shutdown();
-	}
-
-	public GpioController getGpioController() {
-		return gpioController;
 	}
 
 	public Map<String, GpioPinDigitalInput> getInputPins() {

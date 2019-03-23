@@ -10,7 +10,7 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.joining;
 
-// TODO, finish testing this and use it
+// TODO, finish this
 public class PiPinException extends RuntimeException {
 
 	private PiPinException(Map.Entry<String, Pin> pinConfigEntry) {

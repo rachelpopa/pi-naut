@@ -2,10 +2,9 @@ package pi.naut.github.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import pi.naut.gpio.display.ssd1306.core.component.wrapper.Selectable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PullRequest extends Selectable {
+public class PullRequest {
 	private long id;
 	private int number;
 	private String title;

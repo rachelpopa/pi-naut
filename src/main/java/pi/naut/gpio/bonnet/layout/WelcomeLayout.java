@@ -1,11 +1,11 @@
-package pi.naut.gpio.display.ssd1306.layout;
+package pi.naut.gpio.display.layout;
 
 import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
 import io.micronaut.context.annotation.Value;
 import net.fauxpark.oled.SSD1306;
 import pi.naut.gpio.display.Layout;
-import pi.naut.gpio.display.ssd1306.core.buffer.ComponentBuffer;
+import pi.naut.gpio.display.core.buffer.ComponentBuffer;
 
 import javax.inject.Singleton;
 import java.util.HashMap;
