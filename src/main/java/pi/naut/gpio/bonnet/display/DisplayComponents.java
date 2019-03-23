@@ -1,10 +1,9 @@
-package pi.naut.gpio.bonnet.core;
+package pi.naut.gpio.bonnet.display;
 
 import io.micronaut.core.util.StringUtils;
 import net.fauxpark.oled.SSD1306;
 import net.fauxpark.oled.font.CodePage1252;
 import pi.naut.github.model.PullRequest;
-import pi.naut.gpio.config.DisplayController;
 
 import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
@@ -16,7 +15,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 
-import static pi.naut.gpio.bonnet.core.SSD1306Constants.*;
+import static pi.naut.gpio.bonnet.display.DisplayConstants.*;
 
 @Singleton
 public class DisplayComponents {
@@ -37,27 +36,25 @@ public class DisplayComponents {
 		}
 	}
 
-	public void scrollableList(Object selectedItem, List<Object> items) {
+	public void scrollableList(List dimesionalIterator, int currentIndex) {
 
 		int bufferCount;
-
-		if (items.size() < 5) {
-			bufferCount = items.size();
+		if (dimesionalIterator.size() < 5) {
+			bufferCount = dimesionalIterator.size();
 		} else {
 			bufferCount = 5;    // max rows without action bar
 		}
 
 		if (bufferCount > 0) {
-			// TODO, add logic to automatically hide/show arrows
 //			bufferUpArrow(controller);
-			for (int i = 0; i < items.size(); i++) {
+			for (int i = 0; i < dimesionalIterator.size(); i++) {
 				controller.getGraphics().text(
 						(RADIUS_RADIO_SELECTED * 2) + (PADDING * 2),
 						TEXT_HEIGHT + (TEXT_HEIGHT * (i + 1)) + 1,
 						new CodePage1252(),     // TODO, use a monospaced font
-						items.get(i).toString()
+						dimesionalIterator.get(i).toString()
 				);
-				if (items.get(i).equals(selectedItem)) {
+				if (currentIndex == i) {
 					controller.getGraphics().circle(RADIUS_RADIO_SELECTED, (TEXT_HEIGHT + (PADDING * 2)) + (TEXT_HEIGHT * (i + 1)), 1);
 				}
 			}
@@ -77,7 +74,7 @@ public class DisplayComponents {
 	}
 
 	public void startupScreen(String user) {
-		controller.getGraphics().text(25, MIN_XY, new CodePage1252(), "PI-NAUT");
+		controller.getGraphics().text(42, MIN_XY, new CodePage1252(), "PI-NAUT");
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			InputStream resourceAsStream = classLoader.getResourceAsStream("raspberry.png");
@@ -94,7 +91,7 @@ public class DisplayComponents {
 				PADDING,
 				TEXT_HEIGHT + (TEXT_HEIGHT) + 1,
 				new CodePage1252(),
-				"TITLE: " + pullRequest.getTitle()
+				"NAME: " + pullRequest.getTitle()
 		);
 		controller.getGraphics().text(
 				PADDING,
@@ -106,7 +103,8 @@ public class DisplayComponents {
 				PADDING,
 				TEXT_HEIGHT + (TEXT_HEIGHT * 3) + 1,
 				new CodePage1252(),
-				"REPO: " + pullRequest.getRepository().getFullName()
+//				"REPO: " + pullRequest.getRepository().getFullName()
+				"REPO: WORKING ON IT..."
 		);
 		controller.getGraphics().text(
 				PADDING,

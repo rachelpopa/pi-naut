@@ -3,7 +3,7 @@ package pi.naut.gpio.bonnet.display;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class SSD1306Constants {
+public class DisplayConstants {
 
 	public static final int FONT_HEIGHT = 7;
 	public static final int PADDING = 2;

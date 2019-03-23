@@ -1,11 +1,12 @@
-package pi.naut.gpio.display.layout;
+package pi.naut.gpio.bonnet.layout;
 
 import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
-import net.fauxpark.oled.SSD1306;
-import pi.naut.gpio.display.Layout;
-import pi.naut.gpio.display.core.buffer.ComponentBuffer;
+import pi.naut.gpio.bonnet.Layout;
+import pi.naut.gpio.bonnet.OLEDBonnet;
+import pi.naut.gpio.bonnet.display.DisplayComponents;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,25 +16,29 @@ import java.util.Map;
 @Singleton
 public class RuntimeStatsLayout implements Layout {
 
-	private ComponentBuffer componentBuffer = new ComponentBuffer();
-	private static final String title = "RUNTIME STATS";
+	@Inject
+	private DisplayComponents displayComponents = new DisplayComponents();
+
+	public static final String NAME = "RUNTIME STATS";
 
 	@Override
-	public void init() {}
-
-	@Override
-	public void bufferTo(SSD1306 displayController) {
-		componentBuffer.titleBar(displayController, title);
-		componentBuffer.runtimeStats(displayController, getStats());
+	public String name() {
+		return NAME;
 	}
 
 	@Override
-	public Map<String, GpioPinListener> getListenerConfiguration() {
+	public void bufferDisplayComponents() {
+		displayComponents.titleBar(NAME);
+		displayComponents.runtimeStats(getStats());
+	}
+
+	@Override
+	public Map<String, GpioPinListener> applyListenerConfiguration(OLEDBonnet oledBonnet) {
 		return new HashMap<>();
 	}
 
 	@Override
-	public Map<String, GpioTrigger> getTriggerConfiguration() {
+	public Map<String, GpioTrigger> applyTriggerConfiguration(OLEDBonnet oledBonnet) {
 		return new HashMap<>();
 	}
 

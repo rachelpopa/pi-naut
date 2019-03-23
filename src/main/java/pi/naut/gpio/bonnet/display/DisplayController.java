@@ -1,4 +1,4 @@
-package pi.naut.gpio.config;
+package pi.naut.gpio.bonnet.display;
 
 import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.i2c.I2CBus;

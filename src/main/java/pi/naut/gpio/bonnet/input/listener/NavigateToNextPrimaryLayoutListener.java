@@ -19,8 +19,8 @@ public class NavigateToNextPrimaryLayoutListener implements GpioPinListenerDigit
 	public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
 		if (event.getState().isHigh()) {
 			if (layouts.getPrimaryLayouts().hasNext()) {
-				oledBonnet.displayLayout(layouts.getPrimaryLayouts().next());
 				oledBonnet.setIsPrimaryLayout(true);
+				oledBonnet.displayLayout(layouts.getPrimaryLayouts().next());
 			}
 		}
 	}

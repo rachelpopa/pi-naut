@@ -2,24 +2,25 @@ package pi.naut.gpio.bonnet.input.listener;
 
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
+import pi.naut.gpio.bonnet.Layout;
 import pi.naut.gpio.bonnet.OLEDBonnet;
-import pi.naut.gpio.bonnet.layout.PullRequestDetailsLayout;
 
-public class NavigateToPullRequestDetailListener implements GpioPinListenerDigital {
+public class NavigateToLayoutListener implements GpioPinListenerDigital {
 
 	private OLEDBonnet oledBonnet;
-	private PullRequestDetailsLayout pullRequestDetailsLayout;
+	private Layout layout;
 
-	public NavigateToPullRequestDetailListener(OLEDBonnet oledBonnet, PullRequestDetailsLayout pullRequestDetailsLayout) {
+	public NavigateToLayoutListener(OLEDBonnet oledBonnet, Layout layout) {
 		this.oledBonnet = oledBonnet;
-		this.pullRequestDetailsLayout = pullRequestDetailsLayout;
+		this.layout = layout;
 	}
 
 	@Override
 	public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
 		if (event.getState().isHigh()) {
-			oledBonnet.displayLayout(pullRequestDetailsLayout);
 			oledBonnet.setIsPrimaryLayout(false);
+			oledBonnet.displayLayout(layout);
+//			ApplicationContext.run().publishEvent(new RefreshEvent()); // use refresh events to redisplay layout
 		}
 	}
 

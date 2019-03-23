@@ -1,14 +1,13 @@
-package pi.naut.gpio.display.layout;
+package pi.naut.gpio.bonnet.layout;
 
 import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
-import net.fauxpark.oled.SSD1306;
-import pi.naut.github.model.PullRequest;
-import pi.naut.gpio.display.Layout;
-import pi.naut.gpio.display.core.buffer.ComponentBuffer;
-import pi.naut.gpio.listener.DisplayCurrentParentLayoutListener;
+import pi.naut.ApplicationState;
+import pi.naut.gpio.bonnet.Layout;
+import pi.naut.gpio.bonnet.OLEDBonnet;
+import pi.naut.gpio.bonnet.display.DisplayComponents;
+import pi.naut.gpio.bonnet.input.listener.NavigateToCurrentPrimaryLayoutListener;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.HashMap;
@@ -20,41 +19,33 @@ import static pi.naut.gpio.config.PinConfiguration.BUTTON_A;
 public class PullRequestDetailsLayout implements Layout {
 
 	@Inject
-	private PullRequestLayout pullRequestLayout;
+	private DisplayComponents displayComponents;
 	@Inject
-	private DisplayCurrentParentLayoutListener displayCurrentParentLayoutListener;
+	private ApplicationState applicationState;
 
-	private ComponentBuffer componentBuffer = new ComponentBuffer();
-
-	private static final String TITLE = "PR DETAILS";
-
-	private PullRequest pullRequest;
+	public static final String NAME = "PR DETAILS";
 
 	@Override
-	@PostConstruct
-	public void init() {}
-
-	@Override
-	public void bufferTo(SSD1306 displayController) {
-		setPullRequest(pullRequestLayout.getPullRequestCircularIterator().current());
-		componentBuffer.titleBar(displayController, TITLE);
-		componentBuffer.pullRequestDetails(displayController, pullRequest);
+	public String name() {
+		return NAME;
 	}
 
 	@Override
-	public Map<String, GpioPinListener> getListenerConfiguration() {
+	public void bufferDisplayComponents() {
+		displayComponents.titleBar(NAME);
+		displayComponents.pullRequestDetails(applicationState.getPullRequests().current());
+	}
+
+	@Override
+	public Map<String, GpioPinListener> applyListenerConfiguration(OLEDBonnet oledBonnet) {
 		Map<String, GpioPinListener> listenerMap = new HashMap<>();
-		listenerMap.put(BUTTON_A, displayCurrentParentLayoutListener);
+		listenerMap.put(BUTTON_A, new NavigateToCurrentPrimaryLayoutListener(oledBonnet));
 		return listenerMap;
 	}
 
 	@Override
-	public Map<String, GpioTrigger> getTriggerConfiguration() {
+	public Map<String, GpioTrigger> applyTriggerConfiguration(OLEDBonnet oledBonnet) {
 		return new HashMap<>();
-	}
-
-	private void setPullRequest(PullRequest pullRequest) {
-		this.pullRequest = pullRequest;
 	}
 
 }
