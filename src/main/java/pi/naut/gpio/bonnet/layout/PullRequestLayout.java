@@ -6,9 +6,9 @@ import pi.naut.ApplicationState;
 import pi.naut.gpio.bonnet.Layout;
 import pi.naut.gpio.bonnet.OLEDBonnet;
 import pi.naut.gpio.bonnet.display.DisplayComponents;
-import pi.naut.gpio.bonnet.input.listener.DecrementItemListener;
-import pi.naut.gpio.bonnet.input.listener.IncrementItemListener;
-import pi.naut.gpio.bonnet.input.listener.NavigateToLayoutListener;
+import pi.naut.gpio.input.listener.DecrementItemListener;
+import pi.naut.gpio.input.listener.IncrementItemListener;
+import pi.naut.gpio.input.listener.NavigateToLayoutListener;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;

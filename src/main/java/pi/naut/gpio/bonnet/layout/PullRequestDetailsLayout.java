@@ -6,7 +6,7 @@ import pi.naut.ApplicationState;
 import pi.naut.gpio.bonnet.Layout;
 import pi.naut.gpio.bonnet.OLEDBonnet;
 import pi.naut.gpio.bonnet.display.DisplayComponents;
-import pi.naut.gpio.bonnet.input.listener.NavigateToCurrentPrimaryLayoutListener;
+import pi.naut.gpio.input.listener.NavigateToCurrentPrimaryLayoutListener;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

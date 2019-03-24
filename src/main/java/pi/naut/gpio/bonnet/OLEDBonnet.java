@@ -2,9 +2,9 @@ package pi.naut.gpio.bonnet;
 
 import com.pi4j.io.gpio.GpioPinDigitalInput;
 import io.micronaut.scheduling.annotation.Scheduled;
-import pi.naut.gpio.bonnet.display.DisplayController;
-import pi.naut.gpio.bonnet.input.DigitalInputController;
-import pi.naut.gpio.bonnet.input.listener.NavigateToNextPrimaryLayoutListener;
+import pi.naut.gpio.controller.DisplayController;
+import pi.naut.gpio.controller.PinController;
+import pi.naut.gpio.input.listener.NavigateToNextPrimaryLayoutListener;
 import pi.naut.gpio.bonnet.layout.WelcomeLayout;
 import pi.naut.gpio.config.PinConfiguration;
 
@@ -20,7 +20,7 @@ public class OLEDBonnet {
 
 	// Controllers
 	@Inject
-	private DigitalInputController digitalInputController;
+	private PinController pinController;
 	@Inject
 	private DisplayController displayController;
 
@@ -66,7 +66,7 @@ public class OLEDBonnet {
 	}
 
 	private void applyLayoutEvents(Layout layout) {
-		Map<String, GpioPinDigitalInput> pins = digitalInputController.getInputPins().entrySet()
+		Map<String, GpioPinDigitalInput> pins = pinController.getInputPins().entrySet()
 				.stream()
 				.filter(pin -> !PinConfiguration.JOYSTICK_CENTER.equals(pin.getKey())) // exclude global pin
 				.collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -80,7 +80,7 @@ public class OLEDBonnet {
 	}
 
 	private void applyGlobalEvents() {
-		digitalInputController.getInputPins().get(PinConfiguration.JOYSTICK_CENTER)
+		pinController.getInputPins().get(PinConfiguration.JOYSTICK_CENTER)
 				.addListener(new NavigateToNextPrimaryLayoutListener(this, layouts));
 	}
 

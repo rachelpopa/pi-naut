@@ -1,4 +1,4 @@
-package pi.naut.gpio.bonnet.input;
+package pi.naut.gpio.controller;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
@@ -13,12 +13,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
-public class DigitalInputController {
+public class PinController {
 
 	private final GpioController gpioController = GpioFactory.getInstance();
 	private Map<String, GpioPinDigitalInput> inputPins = new ConcurrentHashMap<>();
 
-	DigitalInputController() {
+	PinController() {
 		PinConfiguration.DIGITAL_INPUT_PINS.forEach((key, value) ->
 				inputPins.computeIfAbsent(key, e -> {
 					GpioPinDigitalInput gpioPinDigitalInput = gpioController.provisionDigitalInputPin(value, key, PinPullResistance.PULL_UP);

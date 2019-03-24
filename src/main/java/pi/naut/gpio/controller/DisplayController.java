@@ -1,4 +1,4 @@
-package pi.naut.gpio.bonnet.display;
+package pi.naut.gpio.controller;
 
 import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.i2c.I2CBus;
@@ -7,6 +7,7 @@ import io.micronaut.runtime.event.annotation.EventListener;
 import net.fauxpark.oled.SSD1306;
 import net.fauxpark.oled.transport.I2CTransport;
 import pi.naut.gpio.bonnet.Layout;
+import pi.naut.gpio.bonnet.display.DisplayConstants;
 
 import javax.inject.Singleton;
 import java.util.Timer;
@@ -15,7 +16,9 @@ import java.util.TimerTask;
 @Singleton
 public class DisplayController {
 
-	private final SSD1306 ssd1306 = new SSD1306(128, 64, new I2CTransport(RaspiPin.GPIO_15, I2CBus.BUS_1, 0x3c));
+	private final SSD1306 ssd1306 = new SSD1306(
+			DisplayConstants.MAX_WIDTH, DisplayConstants.MAX_HEIGHT,
+			new I2CTransport(RaspiPin.GPIO_15, I2CBus.BUS_1, 0x3c));
 
 	DisplayController() {
 		if (!ssd1306.isInitialised()) {

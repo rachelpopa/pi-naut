@@ -1,4 +1,4 @@
-package pi.naut.gpio.bonnet.input.listener;
+package pi.naut.gpio.input.listener;
 
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
@@ -8,9 +8,7 @@ import pi.naut.devlight.HueConstants;
 import pi.naut.devlight.LightState;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
-@Singleton
 public class HueTestListener implements GpioPinListenerDigital {
 
 	@Value("${github.user}")

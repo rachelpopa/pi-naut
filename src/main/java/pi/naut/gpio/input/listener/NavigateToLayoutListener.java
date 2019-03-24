@@ -1,4 +1,4 @@
-package pi.naut.gpio.bonnet.input.listener;
+package pi.naut.gpio.input.listener;
 
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;

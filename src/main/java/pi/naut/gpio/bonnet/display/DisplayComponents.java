@@ -4,6 +4,7 @@ import io.micronaut.core.util.StringUtils;
 import net.fauxpark.oled.SSD1306;
 import net.fauxpark.oled.font.CodePage1252;
 import pi.naut.github.model.PullRequest;
+import pi.naut.gpio.controller.DisplayController;
 
 import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
