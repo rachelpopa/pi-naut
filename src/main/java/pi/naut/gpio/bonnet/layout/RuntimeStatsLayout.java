@@ -5,13 +5,14 @@ import com.pi4j.io.gpio.trigger.GpioTrigger;
 import pi.naut.gpio.bonnet.Layout;
 import pi.naut.gpio.bonnet.OLEDBonnet;
 import pi.naut.gpio.bonnet.display.DisplayComponents;
+import util.StateList;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import static java.util.Arrays.asList;
 
 @Singleton
 public class RuntimeStatsLayout implements Layout {
@@ -29,7 +30,7 @@ public class RuntimeStatsLayout implements Layout {
 	@Override
 	public void bufferDisplayComponents() {
 		displayComponents.titleBar(NAME);
-		displayComponents.runtimeStats(getStats());
+		displayComponents.paginatedList(getStats());
 	}
 
 	@Override
@@ -42,13 +43,12 @@ public class RuntimeStatsLayout implements Layout {
 		return new HashMap<>();
 	}
 
-	private List<String> getStats() {
-		List<String> stats = new ArrayList<>();
-		stats.add("Cores: "      + Runtime.getRuntime().availableProcessors());
-		stats.add("Free mem: "   + Runtime.getRuntime().freeMemory());
-		stats.add("Max mem: "    + Runtime.getRuntime().maxMemory());
-		stats.add("Tot mem: "    + Runtime.getRuntime().totalMemory());
-		return stats;
+	private StateList getStats() {
+		return new StateList<>(asList(
+				"Cores: " + Runtime.getRuntime().availableProcessors(),
+				"Free mem: " + Runtime.getRuntime().freeMemory(),
+				"Max mem: " + Runtime.getRuntime().maxMemory(),
+				"Tot mem: " + Runtime.getRuntime().totalMemory()));
 	}
 
 }

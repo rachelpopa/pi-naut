@@ -3,8 +3,7 @@ package pi.naut.gpio.bonnet;
 import pi.naut.gpio.bonnet.layout.PullRequestDetailsLayout;
 import pi.naut.gpio.bonnet.layout.PullRequestLayout;
 import pi.naut.gpio.bonnet.layout.RuntimeStatsLayout;
-import util.DimesionalIterator;
-import util.ImmutableList;
+import util.StateList;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -27,26 +26,26 @@ public class Layouts {
 
 	/***/
 
-	private DimesionalIterator<Layout> primaryLayouts;
-	private DimesionalIterator<PullRequestDetailsLayout> secondaryLayouts;
+	private StateList<Layout> primaryLayouts;
+	private StateList<PullRequestDetailsLayout> secondaryLayouts;
 
 	@PostConstruct
 	private void init() {
-		primaryLayouts = new ImmutableList<>(asList(
+		primaryLayouts = new StateList<>(asList(
 				runtimeStatsLayout,
 				pullRequestLayout
-		), true).iterator();
+		), true);
 
-		secondaryLayouts = new ImmutableList<>(asList(
+		secondaryLayouts = new StateList<>(asList(
 				pullRequestDetailsLayout
-		), true).iterator();
+		), true);
 	}
 
-	public DimesionalIterator<Layout> getPrimaryLayouts() {
+	public StateList<Layout> getPrimaryLayouts() {
 		return primaryLayouts;
 	}
 
-	public DimesionalIterator<PullRequestDetailsLayout> getSecondaryLayouts() {
+	public StateList<PullRequestDetailsLayout> getSecondaryLayouts() {
 		return secondaryLayouts;
 	}
 

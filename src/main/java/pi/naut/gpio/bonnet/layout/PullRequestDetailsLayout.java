@@ -3,16 +3,19 @@ package pi.naut.gpio.bonnet.layout;
 import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
 import pi.naut.ApplicationState;
+import pi.naut.github.model.PullRequest;
 import pi.naut.gpio.bonnet.Layout;
 import pi.naut.gpio.bonnet.OLEDBonnet;
 import pi.naut.gpio.bonnet.display.DisplayComponents;
 import pi.naut.gpio.input.listener.NavigateToCurrentPrimaryLayoutListener;
+import util.StateList;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static pi.naut.gpio.config.PinConfiguration.BUTTON_A;
 
 @Singleton
@@ -33,7 +36,17 @@ public class PullRequestDetailsLayout implements Layout {
 	@Override
 	public void bufferDisplayComponents() {
 		displayComponents.titleBar(NAME);
-		displayComponents.pullRequestDetails(applicationState.getPullRequests().current());
+		displayComponents.paginatedList(getPullRequestDetails());
+	}
+
+	private StateList getPullRequestDetails() {
+		PullRequest current = applicationState.getPullRequests().current();
+		return new StateList<>(asList(
+				"TITLE: " + current.getTitle(),
+				"NO: " + current.getNumber(),
+				"MERGEABLE: " + current.isMergable(),
+				"MERGED: " + current.isMerged()
+		));
 	}
 
 	@Override

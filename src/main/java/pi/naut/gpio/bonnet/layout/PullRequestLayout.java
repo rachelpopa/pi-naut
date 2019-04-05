@@ -32,9 +32,7 @@ public class PullRequestLayout implements Layout {
 	public static final String NAME = "PULL REQUESTS";
 
 	@PostConstruct
-	private void init() {
-		applicationState.updatePullRequests();
-	}
+	private void init() { applicationState.updatePullRequests(); }
 
 	@Override
 	public String name() {
@@ -44,9 +42,7 @@ public class PullRequestLayout implements Layout {
 	@Override
 	public void bufferDisplayComponents() {
 		displayComponents.titleBar(NAME);
-		displayComponents.scrollableList(
-				applicationState.getPullRequests().getList(),
-				applicationState.getPullRequests().currentIndex());
+		displayComponents.scrollableList(applicationState.getPullRequests());
 	}
 
 	@Override

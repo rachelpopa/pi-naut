@@ -25,6 +25,6 @@ public class DisplayConstants {
 	public static final int ARROW_SLOPE = 2;
 
 	public static final int HEIGHT_BUTTON = 11;
-	public static final int RADIUS_RADIO_SELECTED = 3;
+	public static final int RADIUS_SELECTED = 3;
 
 }

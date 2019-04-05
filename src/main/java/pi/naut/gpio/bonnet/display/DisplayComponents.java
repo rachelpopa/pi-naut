@@ -3,8 +3,8 @@ package pi.naut.gpio.bonnet.display;
 import io.micronaut.core.util.StringUtils;
 import net.fauxpark.oled.SSD1306;
 import net.fauxpark.oled.font.CodePage1252;
-import pi.naut.github.model.PullRequest;
 import pi.naut.gpio.controller.DisplayController;
+import util.StateList;
 
 import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
@@ -13,7 +13,6 @@ import javax.inject.Singleton;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Objects;
 
 import static pi.naut.gpio.bonnet.display.DisplayConstants.*;
@@ -25,53 +24,11 @@ public class DisplayComponents {
 	private DisplayController displayController;
 	private SSD1306 controller;
 
+	private static final int MAX_ITEMS_PER_PAGE = 5; // without action bar
+
 	@PostConstruct
 	private void init() {
 		this.controller = displayController.getSsd1306();
-	}
-
-	public void titleBar(String title) {
-		if (StringUtils.isNotEmpty(title)) {
-			controller.getGraphics().text(25, MIN_XY, new CodePage1252(), title);
-			controller.getGraphics().line(MIN_XY, TEXT_HEIGHT, MAX_X, TEXT_HEIGHT);
-		}
-	}
-
-	public void scrollableList(List dimesionalIterator, int currentIndex) {
-
-		int bufferCount;
-		if (dimesionalIterator.size() < 5) {
-			bufferCount = dimesionalIterator.size();
-		} else {
-			bufferCount = 5;    // max rows without action bar
-		}
-
-		if (bufferCount > 0) {
-//			bufferUpArrow(controller);
-			for (int i = 0; i < dimesionalIterator.size(); i++) {
-				controller.getGraphics().text(
-						(RADIUS_RADIO_SELECTED * 2) + (PADDING * 2),
-						TEXT_HEIGHT + (TEXT_HEIGHT * (i + 1)) + 1,
-						new CodePage1252(),     // TODO, use a monospaced font
-						dimesionalIterator.get(i).toString()
-				);
-				if (currentIndex == i) {
-					controller.getGraphics().circle(RADIUS_RADIO_SELECTED, (TEXT_HEIGHT + (PADDING * 2)) + (TEXT_HEIGHT * (i + 1)), 1);
-				}
-			}
-//			bufferDownArrow(controller);
-		}
-
-	}
-
-	public void bufferDownArrow() {
-		controller.getGraphics().line(HALF_WIDTH - ARROW_SLOPE, BASE_HEIGHT_ARROW_DOWN, HALF_WIDTH, BASE_HEIGHT_ARROW_DOWN + ARROW_SLOPE);
-		controller.getGraphics().line(HALF_WIDTH, BASE_HEIGHT_ARROW_DOWN + ARROW_SLOPE, HALF_WIDTH + ARROW_SLOPE, BASE_HEIGHT_ARROW_DOWN);
-	}
-
-	public void bufferUpArrow() {
-		controller.getGraphics().line(HALF_WIDTH - ARROW_SLOPE, BASE_HEIGHT_ARROW_UP + ARROW_SLOPE, HALF_WIDTH, BASE_HEIGHT_ARROW_UP);
-		controller.getGraphics().line(HALF_WIDTH, BASE_HEIGHT_ARROW_UP, HALF_WIDTH + ARROW_SLOPE, BASE_HEIGHT_ARROW_UP + ARROW_SLOPE);
 	}
 
 	public void startupScreen(String user) {
@@ -87,53 +44,63 @@ public class DisplayComponents {
 		controller.getGraphics().text(21, MAX_Y - FONT_HEIGHT, new CodePage1252(), "WELCOME " + user.toUpperCase());
 	}
 
-	public void pullRequestDetails(PullRequest pullRequest) {
-		controller.getGraphics().text(
-				PADDING,
-				TEXT_HEIGHT + (TEXT_HEIGHT) + 1,
-				new CodePage1252(),
-				"NAME: " + pullRequest.getTitle()
-		);
-		controller.getGraphics().text(
-				PADDING,
-				TEXT_HEIGHT + (TEXT_HEIGHT * 4) + 1,
-				new CodePage1252(),
-				"NUMBER: " + pullRequest.getNumber()
-		);
-		controller.getGraphics().text(
-				PADDING,
-				TEXT_HEIGHT + (TEXT_HEIGHT * 3) + 1,
-				new CodePage1252(),
-//				"REPO: " + pullRequest.getRepository().getFullName()
-				"REPO: WORKING ON IT..."
-		);
-		controller.getGraphics().text(
-				PADDING,
-				TEXT_HEIGHT + (TEXT_HEIGHT * 2) + 1,
-				new CodePage1252(),
-				"STATE: " + pullRequest.getState().name()
-		);
-		controller.getGraphics().text(
-				PADDING,
-				TEXT_HEIGHT + (TEXT_HEIGHT * 5) + 1,
-				new CodePage1252(),
-				"MSTATE: " + pullRequest.getMergableState()
-		);
-	}
-
-	// TODO, make pagination component
-	public void runtimeStats(List<String> stats) {
-		for (int i = 0; i < stats.size(); i++) {
-			controller.getGraphics().text(
-					PADDING,
-					TEXT_HEIGHT + (TEXT_HEIGHT * (i + 1)) + 1,
-					new CodePage1252(),
-					stats.get(i)
-			);
+	public void titleBar(String title) {
+		if (StringUtils.isNotEmpty(title)) {
+			controller.getGraphics().text(25, MIN_XY, new CodePage1252(), title);
+			controller.getGraphics().line(MIN_XY, TEXT_HEIGHT, MAX_X, TEXT_HEIGHT);
 		}
 	}
 
-	// TODO, take another swing at this
+	public void paginatedList(StateList list) {
+		bufferList(list, MIN_XY, true);
+	}
+
+	public void scrollableList(StateList stateList) {
+		bufferList(stateList, (RADIUS_SELECTED * 2) + (PADDING * 2), false);
+		if (stateList.hasCurrent()) {
+			controller.getGraphics().circle(RADIUS_SELECTED, (TEXT_HEIGHT + (PADDING * 2)) + (TEXT_HEIGHT * (stateList.currentIndex() % MAX_ITEMS_PER_PAGE)), 1);
+		}
+	}
+
+	private void bufferList(StateList stateList, int xOffset, boolean paginated) {
+		if (!stateList.hasCurrent()) {
+			return;
+		}
+		int currentPage = stateList.currentIndex() > MAX_ITEMS_PER_PAGE ? stateList.currentIndex() / MAX_ITEMS_PER_PAGE : 1;
+		int maxPages = stateList.getList().size() > MAX_ITEMS_PER_PAGE ? stateList.getList().size() / MAX_ITEMS_PER_PAGE : 1;
+		int maxItems = stateList.getList().size() < MAX_ITEMS_PER_PAGE ? stateList.getList().size() : MAX_ITEMS_PER_PAGE;
+
+		int indexOffset = paginated
+				? (stateList.currentIndex() % maxPages) * MAX_ITEMS_PER_PAGE
+				: (currentPage - 1) * MAX_ITEMS_PER_PAGE;
+
+		if (currentPage != 1) {
+			bufferUpArrow();
+		}
+		for (int i = 0; i < maxItems; i++) {
+			controller.getGraphics().text(
+					xOffset,
+					TEXT_HEIGHT + (TEXT_HEIGHT * (i + 1)) + 1,
+					new CodePage1252(),     // TODO, use a monospaced font
+					stateList.getList().get(i + indexOffset).toString()
+			);
+		}
+		if (maxPages > 1 && currentPage != maxPages) {
+			bufferDownArrow();
+		}
+	}
+
+	private void bufferDownArrow() {
+		controller.getGraphics().line(HALF_WIDTH - ARROW_SLOPE, BASE_HEIGHT_ARROW_DOWN, HALF_WIDTH, BASE_HEIGHT_ARROW_DOWN + ARROW_SLOPE);
+		controller.getGraphics().line(HALF_WIDTH, BASE_HEIGHT_ARROW_DOWN + ARROW_SLOPE, HALF_WIDTH + ARROW_SLOPE, BASE_HEIGHT_ARROW_DOWN);
+	}
+
+	private void bufferUpArrow() {
+		controller.getGraphics().line(HALF_WIDTH - ARROW_SLOPE, BASE_HEIGHT_ARROW_UP + ARROW_SLOPE, HALF_WIDTH, BASE_HEIGHT_ARROW_UP);
+		controller.getGraphics().line(HALF_WIDTH, BASE_HEIGHT_ARROW_UP, HALF_WIDTH + ARROW_SLOPE, BASE_HEIGHT_ARROW_UP + ARROW_SLOPE);
+	}
+
+// TODO, take another swing at this
 //	public void actionBar(List<Action> actions) {
 //		if (CollectionUtils.isNotEmpty(actions)) {
 //			int i = 1;
@@ -161,9 +128,9 @@ public class DisplayComponents {
 //				// selected indicator
 //				if (action.isSelected()) {
 //					controller.getGraphics().circle(
-//							(buttonWidth * i) - (RADIUS_RADIO_SELECTED * 2) - PADDING,
+//							(buttonWidth * i) - (RADIUS_SELECTED * 2) - PADDING,
 //							MAX_HEIGHT - (HEIGHT_BUTTON / 2) - 1,
-//							RADIUS_RADIO_SELECTED
+//							RADIUS_SELECTED
 //					);
 //				}
 //
