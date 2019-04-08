@@ -1,11 +1,11 @@
 package pi.naut.github;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import pi.naut.github.model.ActionType;
-import pi.naut.github.model.EventType;
+import pi.naut.github.model.type.ActionType;
+import pi.naut.github.model.type.EventType;
 import pi.naut.github.model.PullRequest;
 import pi.naut.github.model.PullRequestEvent;
-import pi.naut.github.model.StateType;
+import pi.naut.github.model.type.StateType;
 import pi.naut.github.model.User;
 
 import javax.inject.Inject;
@@ -23,10 +23,10 @@ public class GithubService {
 	public List<PullRequest> getOpenPullRequests() {
 		return gitHubClient.getCurrentUserEvents()
 				.stream()
-				.filter(event -> event.getType().equals(EventType.PullRequestEvent.name()))
+				.filter(event -> event.getType() == EventType.PullRequestEvent)
 				.map(event -> new ObjectMapper().convertValue(event.getPayload(), PullRequestEvent.class))
 				.filter(pr -> pr.getAction() == ActionType.opened)
-				.map(pre -> pre.getPullRequest())
+				.map(PullRequestEvent::getPullRequest)
 				.filter(pr -> pr.getState() == StateType.open)
 				.collect(toList());
 	}

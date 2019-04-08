@@ -2,12 +2,13 @@ package pi.naut.gpio.bonnet.layout;
 
 import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
+import io.micronaut.context.annotation.Factory;
 import pi.naut.ApplicationState;
 import pi.naut.github.model.PullRequest;
 import pi.naut.gpio.bonnet.Layout;
 import pi.naut.gpio.bonnet.OLEDBonnet;
 import pi.naut.gpio.bonnet.display.DisplayComponents;
-import pi.naut.gpio.input.listener.NavigateToCurrentPrimaryLayoutListener;
+import pi.naut.gpio.input.listener.NavigateToLayoutListener;
 import util.StateList;
 
 import javax.inject.Inject;
@@ -19,6 +20,7 @@ import static java.util.Arrays.asList;
 import static pi.naut.gpio.config.PinConfiguration.BUTTON_A;
 
 @Singleton
+@Factory
 public class PullRequestDetailsLayout implements Layout {
 
 	@Inject
@@ -34,7 +36,10 @@ public class PullRequestDetailsLayout implements Layout {
 	}
 
 	@Override
-	public void bufferDisplayComponents() {
+	public boolean primary() { return false; }
+
+	@Override
+	public void displayComponents() {
 		displayComponents.titleBar(NAME);
 		displayComponents.paginatedList(getPullRequestDetails());
 	}
@@ -50,14 +55,14 @@ public class PullRequestDetailsLayout implements Layout {
 	}
 
 	@Override
-	public Map<String, GpioPinListener> applyListenerConfiguration(OLEDBonnet oledBonnet) {
+	public Map<String, GpioPinListener> applyListeners(OLEDBonnet oledBonnet) {
 		Map<String, GpioPinListener> listenerMap = new HashMap<>();
-		listenerMap.put(BUTTON_A, new NavigateToCurrentPrimaryLayoutListener(oledBonnet));
+		listenerMap.put(BUTTON_A, new NavigateToLayoutListener(oledBonnet, PullRequestLayout.NAME));
 		return listenerMap;
 	}
 
 	@Override
-	public Map<String, GpioTrigger> applyTriggerConfiguration(OLEDBonnet oledBonnet) {
+	public Map<String, GpioTrigger> applyTriggers(OLEDBonnet oledBonnet) {
 		return new HashMap<>();
 	}
 

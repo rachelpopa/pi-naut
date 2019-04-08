@@ -105,7 +105,6 @@ public class StateList<T> implements StateIterator<T> {
 			return;
 		}
 		list.remove(pos);
-		pos = previousIndex();
 	}
 
 	@Override

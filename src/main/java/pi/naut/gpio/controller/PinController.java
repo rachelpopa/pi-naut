@@ -19,16 +19,18 @@ public class PinController {
 	private Map<String, GpioPinDigitalInput> inputPins = new ConcurrentHashMap<>();
 
 	PinController() {
+		System.out.println("--> GPIO STARTUP");
 		PinConfiguration.DIGITAL_INPUT_PINS.forEach((key, value) ->
 				inputPins.computeIfAbsent(key, e -> {
 					GpioPinDigitalInput gpioPinDigitalInput = gpioController.provisionDigitalInputPin(value, key, PinPullResistance.PULL_UP);
-					gpioPinDigitalInput.setShutdownOptions(false); // FIXME, should this be false (exported)
+					gpioPinDigitalInput.setShutdownOptions(false);
 					return gpioPinDigitalInput;
 				}));
 	}
 
 	@EventListener
 	void onShutdown(ServiceShutdownEvent event) {
+		System.out.println("--> GPIO SHUTDOWN");
 		gpioController.shutdown();
 	}
 
