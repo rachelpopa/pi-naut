@@ -1,4 +1,4 @@
-package pi.naut.github.model.type;
+package pi.naut.github.model;
 
 public enum EventType {
 	IssueCommentEvent,

@@ -22,7 +22,7 @@ public class DisplayController {
 
 	DisplayController() {
 		if (!ssd1306.isInitialised()) {
-			System.out.println("--> SSD1306 STARTUP");
+			System.out.println("--> STARTUP");
 			ssd1306.startup(false);
 		}
 	}
@@ -30,7 +30,6 @@ public class DisplayController {
 	@EventListener
 	void onShutdown(ServiceShutdownEvent event) {
 		clearDisplay();
-		System.out.println("--> SSD1306 SHUTDOWN");
 		ssd1306.shutdown();
 	}
 
@@ -43,21 +42,15 @@ public class DisplayController {
 		ssd1306.display();
 	}
 
-	public void display(Layout layout) {
-		if (layout == null) {
-			return;
-		}
+	public void bufferLayout(Layout layout) {
 		ssd1306.clear();
-		layout.displayComponents();
+		layout.bufferDisplayComponents();
 		ssd1306.display();
 	}
 
-	public void display(Layout layout, long layoutDurationInMs) {
-		if (layout == null) {
-			return;
-		}
+	public void displayTimedlayout(Layout layout, long layoutDurationInMs) {
 		byte[] buffer = ssd1306.getBuffer();
-		display(layout);
+		bufferLayout(layout);
 		Timer timer = new Timer();
 		timer.schedule(displayTimerTask(buffer), layoutDurationInMs);
 		ssd1306.display();
@@ -70,5 +63,4 @@ public class DisplayController {
 			}
 		};
 	}
-
 }
