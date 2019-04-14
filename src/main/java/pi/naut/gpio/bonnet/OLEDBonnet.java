@@ -1,12 +1,13 @@
 package pi.naut.gpio.bonnet;
 
 import com.pi4j.io.gpio.GpioPinDigitalInput;
-import io.micronaut.scheduling.annotation.Scheduled;
-import pi.naut.gpio.controller.DisplayController;
-import pi.naut.gpio.controller.PinController;
-import pi.naut.gpio.input.listener.NavigateToNextPrimaryLayoutListener;
+import com.pi4j.io.gpio.event.GpioPinListenerDigital;
+import io.micronaut.runtime.event.annotation.EventListener;
 import pi.naut.gpio.bonnet.layout.WelcomeLayout;
 import pi.naut.gpio.config.PinConfiguration;
+import pi.naut.gpio.controller.DisplayController;
+import pi.naut.gpio.controller.PinController;
+import util.StateList;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -24,31 +25,19 @@ public class OLEDBonnet {
 	@Inject
 	private DisplayController displayController;
 
-	// Layouts
 	@Inject
-	private Layouts layouts;
-	@Inject
-	private WelcomeLayout welcomeLayout;
-
-	private Boolean isPrimaryLayout = true;
+	private StateList<Layout> layouts;
 
 	@PostConstruct
-	private void init() {
-		System.out.println("Welcome");
-		displayLayout(welcomeLayout);
+	private void initialize() {
+		displayLayout(WelcomeLayout.NAME);
 		applyGlobalEvents();
 	}
 
-	@Scheduled(fixedRate = "1s")
-	public void redisplayLayout() {
-		if (isPrimaryLayout) {
-			if (layouts.getPrimaryLayouts() != null && layouts.getPrimaryLayouts().current() != null) {
-				displayController.bufferLayout(layouts.getPrimaryLayouts().current());
-			}
-		} else {
-			if (layouts.getSecondaryLayouts() != null && layouts.getSecondaryLayouts().current() != null) {
-				displayController.bufferLayout(layouts.getSecondaryLayouts().current());
-			}
+	@EventListener
+	void refreshDisplay(RefreshDisplayEvent refreshDisplayEvent) {
+		if (layouts.hasCurrent() && refreshDisplayEvent.getSource().contains(layouts.current().name())) {
+			displayController.display(layouts.current());
 		}
 	}
 
@@ -56,13 +45,16 @@ public class OLEDBonnet {
 		if (layout == null) {
 			return;
 		}
-		displayController.bufferLayout(layout);
+		displayController.display(layout);
 		applyLayoutEvents(layout);
 	}
 
-	public void displayPrimaryLayout() {
-		isPrimaryLayout = true;
-		displayLayout(layouts.getPrimaryLayouts().current());
+	public void displayLayout(String layoutName) {
+		layouts.getList()
+				.stream()
+				.filter(l -> l.name().equals(layoutName))
+				.findAny()
+				.ifPresent(this::displayLayout);
 	}
 
 	private void applyLayoutEvents(Layout layout) {
@@ -75,17 +67,23 @@ public class OLEDBonnet {
 			pin.removeAllListeners();
 			pin.removeAllTriggers();
 		});
-		layout.applyListenerConfiguration(this).forEach((pin, listener) -> pins.get(pin).addListener(listener));
-		layout.applyTriggerConfiguration(this).forEach((pin, trigger) -> pins.get(pin).addTrigger(trigger));
+		layout.applyListeners(this).forEach((pin, listener) -> pins.get(pin).addListener(listener));
+		layout.applyTriggers(this).forEach((pin, trigger) -> pins.get(pin).addTrigger(trigger));
 	}
 
 	private void applyGlobalEvents() {
+		// Cycle through primary layoutFactory with the CENTER JOYSTICK
 		pinController.getInputPins().get(PinConfiguration.JOYSTICK_CENTER)
-				.addListener(new NavigateToNextPrimaryLayoutListener(this, layouts));
+				.addListener((GpioPinListenerDigital) event -> {
+					if (event.getState().isHigh()) {
+						nextPrimaryLayout();
+					}
+				});
 	}
 
-	public void setIsPrimaryLayout(Boolean isPrimaryLayout) {
-		this.isPrimaryLayout = isPrimaryLayout;
+	private void nextPrimaryLayout() {
+		while (!layouts.next().isPrimary()) ;
+		displayLayout(layouts.current());
 	}
 
 }

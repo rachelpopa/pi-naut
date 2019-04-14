@@ -5,7 +5,7 @@ import java.util.List;
 public class StateList<T> implements StateIterator<T> {
 
 	private int pos = -1;
-	private final List<T> list;
+	private List<T> list;
 	private boolean circular = false;
 
 	public StateList(List<T> list) {
