@@ -2,15 +2,15 @@ package pi.naut.gpio.bonnet.layout;
 
 import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
+import io.micronaut.context.event.ApplicationEventPublisher;
 import pi.naut.ApplicationState;
 import pi.naut.gpio.bonnet.Layout;
 import pi.naut.gpio.bonnet.OLEDBonnet;
 import pi.naut.gpio.bonnet.display.DisplayComponents;
-import pi.naut.gpio.input.listener.DecrementItemListener;
-import pi.naut.gpio.input.listener.IncrementItemListener;
 import pi.naut.gpio.input.listener.NavigateToLayoutListener;
+import pi.naut.gpio.input.listener.NextStateListener;
+import pi.naut.gpio.input.listener.PreviousStateListener;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.HashMap;
@@ -25,14 +25,10 @@ public class PullRequestLayout implements Layout {
 	private DisplayComponents displayComponents;
 	@Inject
 	private ApplicationState applicationState;
-
 	@Inject
-	private PullRequestDetailsLayout pullRequestDetailsLayout;
+	private ApplicationEventPublisher applicationEventPublisher;
 
 	public static final String NAME = "PULL REQUESTS";
-
-	@PostConstruct
-	private void init() { applicationState.updatePullRequests(); }
 
 	@Override
 	public String name() {
@@ -40,24 +36,31 @@ public class PullRequestLayout implements Layout {
 	}
 
 	@Override
-	public void bufferDisplayComponents() {
+	public boolean isPrimary() { return true; }
+
+	@Override
+	public void displayComponents() {
 		displayComponents.titleBar(NAME);
 		displayComponents.scrollableList(applicationState.getPullRequests());
 	}
 
 	@Override
-	public Map<String, GpioPinListener> applyListenerConfiguration(OLEDBonnet oledBonnet) {
+	public Map<String, GpioPinListener> applyListeners(OLEDBonnet oledBonnet) {
 		Map<String, GpioPinListener> listenerMap = new HashMap<>();
 
-		listenerMap.put(JOYSTICK_UP, new DecrementItemListener(oledBonnet, applicationState));
-		listenerMap.put(JOYSTICK_DOWN, new IncrementItemListener(oledBonnet, applicationState));
+		listenerMap.put(JOYSTICK_UP, new PreviousStateListener(
+				applicationEventPublisher, applicationState.getPullRequests(), PullRequestLayout.NAME));
+		listenerMap.put(JOYSTICK_DOWN, new NextStateListener(
+				applicationEventPublisher, applicationState.getPullRequests(), PullRequestLayout.NAME));
 
-		listenerMap.put(BUTTON_B, new NavigateToLayoutListener(oledBonnet, pullRequestDetailsLayout));
+		listenerMap.put(BUTTON_B, new NavigateToLayoutListener(oledBonnet, PullRequestDetailsLayout.NAME));
 
 		return listenerMap;
 	}
 
 	@Override
-	public Map<String, GpioTrigger> applyTriggerConfiguration(OLEDBonnet oledBonnet) { return new HashMap<>(); }
+	public Map<String, GpioTrigger> applyTriggers(OLEDBonnet oledBonnet) {
+		return new HashMap<>();
+	}
 
 }

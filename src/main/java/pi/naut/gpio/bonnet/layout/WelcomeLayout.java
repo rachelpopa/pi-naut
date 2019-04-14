@@ -16,7 +16,7 @@ import java.util.Map;
 public class WelcomeLayout implements Layout {
 
 	@Inject
-	private DisplayComponents displayComponents = new DisplayComponents();
+	private DisplayComponents displayComponents;
 
 	@Value("${github.user}")
 	private String userName;
@@ -24,21 +24,18 @@ public class WelcomeLayout implements Layout {
 	public static final String NAME = "WELCOME";
 
 	@Override
-	public String name() {
-		return NAME;
-	}
+	public String name() { return NAME; }
 
 	@Override
-	public void bufferDisplayComponents() {
-		displayComponents.startupScreen(userName);
-	}
+	public boolean isPrimary() { return false; }
 
 	@Override
-	public Map<String, GpioPinListener> applyListenerConfiguration(OLEDBonnet oledBonnet) {
-		return new HashMap<>();
-	}
+	public void displayComponents() { displayComponents.startupScreen(userName); }
 
 	@Override
-	public Map<String, GpioTrigger> applyTriggerConfiguration(OLEDBonnet oledBonnet) { return new HashMap<>(); }
+	public Map<String, GpioPinListener> applyListeners(OLEDBonnet oledBonnet) { return new HashMap<>(); }
+
+	@Override
+	public Map<String, GpioTrigger> applyTriggers(OLEDBonnet oledBonnet) { return new HashMap<>(); }
 
 }
