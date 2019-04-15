@@ -31,7 +31,7 @@ public class RuntimeStatsLayout implements Layout {
 	public boolean isPrimary() { return true; }
 
 	@Override
-	public void displayComponents() {
+	public void bufferComponents() {
 		displayComponents.titleBar(NAME);
 		displayComponents.paginatedList(applicationState.getRuntimeStats());
 	}

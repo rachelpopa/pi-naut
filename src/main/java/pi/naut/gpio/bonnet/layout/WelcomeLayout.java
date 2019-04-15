@@ -30,7 +30,7 @@ public class WelcomeLayout implements Layout {
 	public boolean isPrimary() { return false; }
 
 	@Override
-	public void displayComponents() { displayComponents.startupScreen(userName); }
+	public void bufferComponents() { displayComponents.startupScreen(userName); }
 
 	@Override
 	public Map<String, GpioPinListener> applyListeners(OLEDBonnet oledBonnet) { return new HashMap<>(); }

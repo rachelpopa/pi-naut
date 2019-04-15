@@ -37,7 +37,7 @@ public class PullRequestDetailsLayout implements Layout {
 	public boolean isPrimary() { return false; }
 
 	@Override
-	public void displayComponents() {
+	public void bufferComponents() {
 		displayComponents.titleBar(NAME);
 		displayComponents.paginatedList(getPullRequestDetails());
 	}

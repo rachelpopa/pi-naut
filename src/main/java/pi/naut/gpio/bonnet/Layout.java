@@ -8,7 +8,7 @@ import java.util.Map;
 public interface Layout {
 	String name();
 	boolean isPrimary();
-	void displayComponents();
+	void bufferComponents();
 	Map<String, GpioPinListener> applyListeners(OLEDBonnet oledBonnet);
 	Map<String, GpioTrigger> applyTriggers(OLEDBonnet oledBonnet);
 }

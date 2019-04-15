@@ -39,7 +39,7 @@ public class PullRequestLayout implements Layout {
 	public boolean isPrimary() { return true; }
 
 	@Override
-	public void displayComponents() {
+	public void bufferComponents() {
 		displayComponents.titleBar(NAME);
 		displayComponents.scrollableList(applicationState.getPullRequests());
 	}

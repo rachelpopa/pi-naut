@@ -17,7 +17,8 @@ import java.util.TimerTask;
 public class DisplayController {
 
 	private final SSD1306 ssd1306 = new SSD1306(
-			DisplayConstants.MAX_WIDTH, DisplayConstants.MAX_HEIGHT,
+			DisplayConstants.MAX_WIDTH,
+			DisplayConstants.MAX_HEIGHT,
 			new I2CTransport(RaspiPin.GPIO_15, I2CBus.BUS_1, 0x3c));
 
 	DisplayController() {
@@ -48,7 +49,7 @@ public class DisplayController {
 			return;
 		}
 		ssd1306.clear();
-		layout.displayComponents();
+		layout.bufferComponents();
 		ssd1306.display();
 	}
 
