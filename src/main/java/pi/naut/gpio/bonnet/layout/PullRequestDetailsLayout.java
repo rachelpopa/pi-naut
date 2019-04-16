@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
-import static pi.naut.gpio.config.PinConfiguration.BUTTON_A;
+import static pi.naut.gpio.PinConfiguration.BUTTON_A;
 
 @Singleton
 public class PullRequestDetailsLayout implements Layout {
@@ -26,19 +26,14 @@ public class PullRequestDetailsLayout implements Layout {
 	@Inject
 	private ApplicationState applicationState;
 
-	public static final String NAME = "PR DETAILS";
-
-	@Override
-	public String name() {
-		return NAME;
-	}
+	public static final String TITLE = "PR DETAILS";
 
 	@Override
 	public boolean isPrimary() { return false; }
 
 	@Override
 	public void bufferComponents() {
-		displayComponents.titleBar(NAME);
+		displayComponents.titleBar(TITLE);
 		displayComponents.paginatedList(getPullRequestDetails());
 	}
 
@@ -55,7 +50,7 @@ public class PullRequestDetailsLayout implements Layout {
 	@Override
 	public Map<String, GpioPinListener> applyListeners(OLEDBonnet oledBonnet) {
 		Map<String, GpioPinListener> listenerMap = new HashMap<>();
-		listenerMap.put(BUTTON_A, new NavigateToLayoutListener(oledBonnet, PullRequestLayout.NAME));
+		listenerMap.put(BUTTON_A, new NavigateToLayoutListener(oledBonnet, PullRequestLayout.class));
 		return listenerMap;
 	}
 

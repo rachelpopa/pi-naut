@@ -4,7 +4,7 @@ import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import io.micronaut.runtime.event.annotation.EventListener;
 import pi.naut.gpio.bonnet.layout.WelcomeLayout;
-import pi.naut.gpio.config.PinConfiguration;
+import pi.naut.gpio.PinConfiguration;
 import pi.naut.gpio.controller.DisplayController;
 import pi.naut.gpio.controller.PinController;
 import util.StateList;
@@ -30,13 +30,13 @@ public class OLEDBonnet {
 
 	@PostConstruct
 	private void initialize() {
-		displayLayout(WelcomeLayout.NAME);
+		displayLayout(WelcomeLayout.class);
 		applyGlobalEvents();
 	}
 
 	@EventListener
 	void refreshDisplay(RefreshDisplayEvent refreshDisplayEvent) {
-		if (layouts.hasCurrent() && refreshDisplayEvent.getSource().contains(layouts.current().name())) {
+		if (layouts.hasCurrent() && refreshDisplayEvent.getSource().contains(layouts.current().getClass().getSimpleName())) {
 			displayController.display(layouts.current());
 		}
 	}
@@ -49,10 +49,10 @@ public class OLEDBonnet {
 		applyLayoutEvents(layout);
 	}
 
-	public void displayLayout(String layoutName) {
+	public void displayLayout(Class layoutClass) {
 		layouts.getList()
 				.stream()
-				.filter(l -> l.name().equals(layoutName))
+				.filter(l -> l.getClass().equals(layoutClass))
 				.findAny()
 				.ifPresent(this::displayLayout);
 	}

@@ -6,7 +6,7 @@ import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.PinPullResistance;
 import io.micronaut.discovery.event.ServiceShutdownEvent;
 import io.micronaut.runtime.event.annotation.EventListener;
-import pi.naut.gpio.config.PinConfiguration;
+import pi.naut.gpio.PinConfiguration;
 
 import javax.inject.Singleton;
 import java.util.Map;

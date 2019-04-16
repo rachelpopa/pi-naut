@@ -16,7 +16,7 @@ import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
 
-import static pi.naut.gpio.config.PinConfiguration.*;
+import static pi.naut.gpio.PinConfiguration.*;
 
 @Singleton
 public class PullRequestLayout implements Layout {
@@ -28,19 +28,14 @@ public class PullRequestLayout implements Layout {
 	@Inject
 	private ApplicationEventPublisher applicationEventPublisher;
 
-	public static final String NAME = "PULL REQUESTS";
-
-	@Override
-	public String name() {
-		return NAME;
-	}
+	public static final String TITLE = "PULL REQUESTS";
 
 	@Override
 	public boolean isPrimary() { return true; }
 
 	@Override
 	public void bufferComponents() {
-		displayComponents.titleBar(NAME);
+		displayComponents.titleBar(TITLE);
 		displayComponents.scrollableList(applicationState.getPullRequests());
 	}
 
@@ -49,11 +44,11 @@ public class PullRequestLayout implements Layout {
 		Map<String, GpioPinListener> listenerMap = new HashMap<>();
 
 		listenerMap.put(JOYSTICK_UP, new PreviousStateListener(
-				applicationEventPublisher, applicationState.getPullRequests(), PullRequestLayout.NAME));
+				applicationEventPublisher, applicationState.getPullRequests(), PullRequestLayout.class));
 		listenerMap.put(JOYSTICK_DOWN, new NextStateListener(
-				applicationEventPublisher, applicationState.getPullRequests(), PullRequestLayout.NAME));
+				applicationEventPublisher, applicationState.getPullRequests(), PullRequestLayout.class));
 
-		listenerMap.put(BUTTON_B, new NavigateToLayoutListener(oledBonnet, PullRequestDetailsLayout.NAME));
+		listenerMap.put(BUTTON_B, new NavigateToLayoutListener(oledBonnet, PullRequestDetailsLayout.class));
 
 		return listenerMap;
 	}

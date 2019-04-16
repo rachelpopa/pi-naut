@@ -65,7 +65,6 @@ public class HelloWorldLayout implements Layout {
 
 __Note:__ Once you create a `Layout`, add it to the `LayoutFactory` to have it available for use by the `OLEDBonnet`. 
 
-
 #### Application State, Services, and Refresh Display Events
 
 It is likely that you will want to share stateful services across multiple layouts. 
@@ -137,7 +136,7 @@ Creates a singleton `SSD1306` controller for an OLED display component.
 
 The `OLEDBonnet` injects both `PinController` and `DisplayController`. It is the default implementation for displaying a `Layout` on the screen while applying I/O events to buttons and switches. 
 
-By default it also determines **how** to apply events. **Global events** are defined directly in the `OLEDBonnet` class and can be excluded when all **layout events** are removed and re-added.
+It also determines **how** to apply events. **Global events** are defined directly in the `OLEDBonnet` class and can be excluded when all **layout events** are removed and re-added.
 
-Lastly, the `OLEDBonnet` controls when to refresh the display via a [context event](https://docs.micronaut.io/latest/guide/index.html#contextEvents). 
+Lastly, the `OLEDBonnet` controls when to refresh by listening to a [context event](https://docs.micronaut.io/latest/guide/index.html#contextEvents). 
 In this case, it is listening for a `RefreshDisplayEvent` and only refreshing the display if the event contains the name of the currently displayed layout.

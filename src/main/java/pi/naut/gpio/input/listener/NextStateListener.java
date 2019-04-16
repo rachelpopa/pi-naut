@@ -10,19 +10,19 @@ public class NextStateListener implements GpioPinListenerDigital {
 
 	ApplicationEventPublisher applicationEventPublisher;
 	private StateList stateList;
-	private String[] layoutNames;
+	private Class[] layoutClasses;
 
-	public NextStateListener(ApplicationEventPublisher applicationEventPublisher, StateList stateList, String... layoutNames) {
+	public NextStateListener(ApplicationEventPublisher applicationEventPublisher, StateList stateList, Class... layoutClasses) {
 		this.stateList = stateList;
 		this.applicationEventPublisher = applicationEventPublisher;
-		this.layoutNames = layoutNames;
+		this.layoutClasses = layoutClasses;
 	}
 
 	@Override
 	public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
 		if (event.getState().isHigh()) {
 			stateList.next();
-			applicationEventPublisher.publishEvent(new RefreshDisplayEvent(layoutNames));
+			applicationEventPublisher.publishEvent(new RefreshDisplayEvent(layoutClasses));
 		}
 	}
 

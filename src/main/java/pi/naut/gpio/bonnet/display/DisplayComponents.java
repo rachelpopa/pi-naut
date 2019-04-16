@@ -24,8 +24,6 @@ public class DisplayComponents {
 	private DisplayController displayController;
 	private SSD1306 controller;
 
-	private static final int MAX_ITEMS_PER_PAGE = 5; // without action bar
-
 	@PostConstruct
 	private void init() {
 		this.controller = displayController.getSsd1306();
@@ -58,7 +56,7 @@ public class DisplayComponents {
 	public void scrollableList(StateList stateList) {
 		bufferList(stateList, (RADIUS_SELECTED * 2) + (PADDING * 2), false);
 		if (stateList.hasCurrent()) {
-			controller.getGraphics().circle(RADIUS_SELECTED, (TEXT_HEIGHT + (PADDING * 2)) + (TEXT_HEIGHT * (stateList.currentIndex() % MAX_ITEMS_PER_PAGE)), 1);
+			controller.getGraphics().circle(RADIUS_SELECTED, 22 + (TEXT_HEIGHT * (stateList.currentIndex() % MAX_ROWS)), 1);
 		}
 	}
 
@@ -66,13 +64,13 @@ public class DisplayComponents {
 		if (!stateList.hasCurrent()) {
 			return;
 		}
-		int currentPage = stateList.currentIndex() > MAX_ITEMS_PER_PAGE ? stateList.currentIndex() / MAX_ITEMS_PER_PAGE : 1;
-		int maxPages = stateList.getList().size() > MAX_ITEMS_PER_PAGE ? stateList.getList().size() / MAX_ITEMS_PER_PAGE : 1;
-		int maxItems = stateList.getList().size() < MAX_ITEMS_PER_PAGE ? stateList.getList().size() : MAX_ITEMS_PER_PAGE;
+		int currentPage = stateList.currentIndex() > MAX_ROWS ? stateList.currentIndex() / MAX_ROWS : 1;
+		int maxPages = stateList.getList().size() > MAX_ROWS ? stateList.getList().size() / MAX_ROWS : 1;
+		int maxItems = stateList.getList().size() < MAX_ROWS ? stateList.getList().size() : MAX_ROWS;
 
 		int indexOffset = paginated
-				? (stateList.currentIndex() % maxPages) * MAX_ITEMS_PER_PAGE
-				: (currentPage - 1) * MAX_ITEMS_PER_PAGE;
+				? (stateList.currentIndex() % maxPages) * MAX_ROWS
+				: (currentPage - 1) * MAX_ROWS;
 
 		if (currentPage != 1) {
 			bufferUpArrow();
@@ -99,44 +97,5 @@ public class DisplayComponents {
 		controller.getGraphics().line(HALF_WIDTH - ARROW_SLOPE, BASE_HEIGHT_ARROW_UP + ARROW_SLOPE, HALF_WIDTH, BASE_HEIGHT_ARROW_UP);
 		controller.getGraphics().line(HALF_WIDTH, BASE_HEIGHT_ARROW_UP, HALF_WIDTH + ARROW_SLOPE, BASE_HEIGHT_ARROW_UP + ARROW_SLOPE);
 	}
-
-// TODO, take another swing at this
-//	public void actionBar(List<Action> actions) {
-//		if (CollectionUtils.isNotEmpty(actions)) {
-//			int i = 1;
-//			int size = actions.size();
-//			int buttonWidth = (MAX_WIDTH / size);
-//
-//			for (Action action : actions) {
-//				// button box
-//				controller.getGraphics().rectangle(
-//						(buttonWidth * (i - 1)) + (i - 1),
-//						MAX_HEIGHT - HEIGHT_BUTTON,
-//						buttonWidth,
-//						HEIGHT_BUTTON,
-//						false
-//				);
-//
-//				// button text
-//				controller.getGraphics().text(
-//						(buttonWidth * (i - 1)) + (i - 1) + PADDING,
-//						MAX_HEIGHT - FONT_HEIGHT - PADDING,
-//						new CodePage1252(),
-//						action.getLongDescription()  // TODO, make this responsive
-//				);
-//
-//				// selected indicator
-//				if (action.isSelected()) {
-//					controller.getGraphics().circle(
-//							(buttonWidth * i) - (RADIUS_SELECTED * 2) - PADDING,
-//							MAX_HEIGHT - (HEIGHT_BUTTON / 2) - 1,
-//							RADIUS_SELECTED
-//					);
-//				}
-//
-//				i++;
-//			}
-//		}
-//	}
 
 }

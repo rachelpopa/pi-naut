@@ -20,19 +20,14 @@ public class RuntimeStatsLayout implements Layout {
 	@Inject
 	private ApplicationState applicationState;
 
-	public static final String NAME = "RUNTIME STATS";
-
-	@Override
-	public String name() {
-		return NAME;
-	}
+	public static final String TITLE = "RUNTIME STATS";
 
 	@Override
 	public boolean isPrimary() { return true; }
 
 	@Override
 	public void bufferComponents() {
-		displayComponents.titleBar(NAME);
+		displayComponents.titleBar(TITLE);
 		displayComponents.paginatedList(applicationState.getRuntimeStats());
 	}
 

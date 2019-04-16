@@ -6,7 +6,6 @@ import com.pi4j.io.gpio.trigger.GpioTrigger;
 import java.util.Map;
 
 public interface Layout {
-	String name();
 	boolean isPrimary();
 	void bufferComponents();
 	Map<String, GpioPinListener> applyListeners(OLEDBonnet oledBonnet);

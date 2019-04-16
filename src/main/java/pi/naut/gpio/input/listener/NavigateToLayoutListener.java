@@ -7,17 +7,17 @@ import pi.naut.gpio.bonnet.OLEDBonnet;
 public class NavigateToLayoutListener implements GpioPinListenerDigital {
 
 	private OLEDBonnet oledBonnet;
-	private String layoutName;
+	private Class layoutClass;
 
-	public NavigateToLayoutListener(OLEDBonnet oledBonnet, String layoutName) {
+	public NavigateToLayoutListener(OLEDBonnet oledBonnet, Class layoutClass) {
 		this.oledBonnet = oledBonnet;
-		this.layoutName = layoutName;
+		this.layoutClass = layoutClass;
 	}
 
 	@Override
 	public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
 		if (event.getState().isHigh()) {
-			oledBonnet.displayLayout(layoutName);
+			oledBonnet.displayLayout(layoutClass);
 		}
 	}
 

@@ -21,11 +21,6 @@ public class WelcomeLayout implements Layout {
 	@Value("${github.user}")
 	private String userName;
 
-	public static final String NAME = "WELCOME";
-
-	@Override
-	public String name() { return NAME; }
-
 	@Override
 	public boolean isPrimary() { return false; }
 

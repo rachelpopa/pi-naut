@@ -29,7 +29,7 @@ public class ApplicationState {
 	@Scheduled(initialDelay = "20s", fixedRate = "1m")
 	void updatePullRequests() {
 		this.pullRequests = new StateList<>(githubService.getOpenPullRequests());
-		applicationEventPublisher.publishEvent(new RefreshDisplayEvent(PullRequestLayout.NAME, PullRequestDetailsLayout.NAME));
+		applicationEventPublisher.publishEvent(new RefreshDisplayEvent(PullRequestLayout.class, PullRequestDetailsLayout.class));
 	}
 
 	@Scheduled(initialDelay = "20s", fixedRate = "1s")
@@ -39,7 +39,7 @@ public class ApplicationState {
 				"Free mem: " + Runtime.getRuntime().freeMemory(),
 				"Max mem: " + Runtime.getRuntime().maxMemory(),
 				"Tot mem: " + Runtime.getRuntime().totalMemory()));
-		applicationEventPublisher.publishEvent(new RefreshDisplayEvent(RuntimeStatsLayout.NAME));
+		applicationEventPublisher.publishEvent(new RefreshDisplayEvent(RuntimeStatsLayout.class));
 	}
 
 	public StateList<PullRequest> getPullRequests() {
