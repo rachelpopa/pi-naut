@@ -4,7 +4,7 @@ import io.micronaut.context.event.ApplicationEventPublisher;
 import io.micronaut.scheduling.annotation.Scheduled;
 import pi.naut.github.GithubService;
 import pi.naut.github.model.PullRequest;
-import pi.naut.gpio.bonnet.RefreshDisplayEvent;
+import pi.naut.gpio.bonnet.display.RefreshDisplayEvent;
 import pi.naut.gpio.bonnet.layout.PullRequestDetailsLayout;
 import pi.naut.gpio.bonnet.layout.PullRequestLayout;
 import pi.naut.gpio.bonnet.layout.RuntimeStatsLayout;
@@ -43,14 +43,16 @@ public class ApplicationState {
 	}
 
 	public StateList<PullRequest> getPullRequests() {
-		if (pullRequests == null)
-			updatePullRequests();
+		if (pullRequests == null) {
+			this.pullRequests = new StateList<>(githubService.getOpenPullRequests());
+		}
 		return pullRequests;
 	}
 
 	public StateList<String> getRuntimeStats() {
-		if (runtimeStats == null)
+		if (runtimeStats == null) {
 			updateRuntimeStats();
+		}
 		return this.runtimeStats;
 	}
 

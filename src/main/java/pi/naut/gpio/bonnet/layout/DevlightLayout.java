@@ -5,11 +5,11 @@ import com.pi4j.io.gpio.trigger.GpioTrigger;
 import io.micronaut.context.event.ApplicationEventPublisher;
 import pi.naut.devlight.DevlightClient;
 import pi.naut.devlight.DevlightState;
-import pi.naut.devlight.LightStateFactory;
+import pi.naut.devlight.LightState;
 import pi.naut.gpio.bonnet.Layout;
 import pi.naut.gpio.bonnet.OLEDBonnet;
 import pi.naut.gpio.bonnet.display.DisplayComponents;
-import pi.naut.gpio.input.listener.ChangeDevlightListener;
+import pi.naut.gpio.input.listener.ChangeDevlightStateListener;
 import pi.naut.gpio.input.listener.NextStateListener;
 import pi.naut.gpio.input.listener.PreviousStateListener;
 import util.StateList;
@@ -34,17 +34,23 @@ public class DevlightLayout implements Layout {
 	private ApplicationEventPublisher applicationEventPublisher;
 
 	private StateList<DevlightState> devlightStates = new StateList<>(asList(
-			new DevlightState("BLINK RED", LightStateFactory.blink(COLOR_RED)),
-			new DevlightState("BLINK YELLOW", LightStateFactory.blink(COLOR_YELLOW)),
-			new DevlightState("BLINK GREEN", LightStateFactory.blink(COLOR_GREEN)),
-			new DevlightState("BLINK BLUE", LightStateFactory.blink(COLOR_BLUE)),
-			new DevlightState("BLINK PINK", LightStateFactory.blink(COLOR_PINK))
+			new DevlightState("BLINK RED", blink(COLOR_RED)),
+			new DevlightState("BLINK YELLOW", blink(COLOR_YELLOW)),
+			new DevlightState("BLINK GREEN", blink(COLOR_GREEN)),
+			new DevlightState("BLINK BLUE", blink(COLOR_BLUE)),
+			new DevlightState("SOLID RED", solid(COLOR_RED)),
+			new DevlightState("SOLID YELLOW", solid(COLOR_YELLOW)),
+			new DevlightState("SOLID GREEN", solid(COLOR_GREEN)),
+			new DevlightState("SOLID BLUE", solid(COLOR_BLUE)),
+			new DevlightState("TURN OFF", turnOffLight())
 	));
 
 	public static final String TITLE = "DEV LIGHTS";
 
 	@Override
-	public boolean isPrimary() { return true; }
+	public boolean isPrimary() {
+		return true;
+	}
 
 	@Override
 	public void bufferComponents() {
@@ -56,10 +62,10 @@ public class DevlightLayout implements Layout {
 	public Map<String, GpioPinListener> applyListeners(OLEDBonnet oledBonnet) {
 		Map<String, GpioPinListener> listeners = new HashMap<>();
 
-		listeners.put(JOYSTICK_UP, new PreviousStateListener(applicationEventPublisher, devlightStates, DevlightLayout.class));
-		listeners.put(JOYSTICK_DOWN, new NextStateListener(applicationEventPublisher, devlightStates, DevlightLayout.class));
+		listeners.put(JOYSTICK_UP, new PreviousStateListener(applicationEventPublisher, devlightStates, this.getClass()));
+		listeners.put(JOYSTICK_DOWN, new NextStateListener(applicationEventPublisher, devlightStates, this.getClass()));
 
-		listeners.put(BUTTON_B, new ChangeDevlightListener(devlightClient, devlightStates.current()));
+		listeners.put(BUTTON_B, new ChangeDevlightStateListener(devlightClient, devlightStates));
 
 		return listeners;
 	}
@@ -69,5 +75,33 @@ public class DevlightLayout implements Layout {
 		return new HashMap<>();
 	}
 
-}
+	private LightState blink(double[] xyColor) {
+		LightState lightState = new LightState();
+		lightState.setOn(true);
+		lightState.setBri(BRI_MAX);
+		lightState.setSat(SAT_MAX);
+		lightState.setXy(xyColor);
+		lightState.setTransitiontime(1);
+		lightState.setAlert(ALERT_L_SELECT);
+		return lightState;
+	}
 
+	private LightState solid(double[] xyColor) {
+		LightState lightState = new LightState();
+		lightState.setOn(true);
+		lightState.setBri(BRI_MAX);
+		lightState.setSat(SAT_MAX);
+		lightState.setTransitiontime(10);
+		lightState.setXy(xyColor);
+		lightState.setAlert(ALERT_NONE);
+		return lightState;
+	}
+
+	private LightState turnOffLight() {
+		LightState lightState = new LightState();
+		lightState.setOn(false);
+		lightState.setAlert(ALERT_NONE);
+		return lightState;
+	}
+
+}

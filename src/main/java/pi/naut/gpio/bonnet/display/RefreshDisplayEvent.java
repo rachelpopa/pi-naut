@@ -1,4 +1,4 @@
-package pi.naut.gpio.bonnet;
+package pi.naut.gpio.bonnet.display;
 
 import io.micronaut.context.event.ApplicationEvent;
 

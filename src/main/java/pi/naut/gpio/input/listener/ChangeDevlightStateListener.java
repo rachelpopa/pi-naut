@@ -4,21 +4,23 @@ import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import pi.naut.devlight.DevlightClient;
 import pi.naut.devlight.DevlightState;
+import util.StateList;
 
-public class ChangeDevlightListener implements GpioPinListenerDigital {
+public class ChangeDevlightStateListener implements GpioPinListenerDigital {
 
 	private DevlightClient devlightClient;
-	private DevlightState devlightState;
+	private StateList<DevlightState> devlightStates;
 
-	public ChangeDevlightListener(DevlightClient devlightClient, DevlightState devlightState) {
+	public ChangeDevlightStateListener(DevlightClient devlightClient, StateList<DevlightState> devlightStates) {
 		this.devlightClient = devlightClient;
-		this.devlightState = devlightState;
+		this.devlightStates = devlightStates;
 	}
 
 	@Override
 	public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
 		if (event.getState().isHigh()) {
-			devlightClient.setLightState(devlightState.getLightState());
+			System.out.println(devlightStates.current().getDescription());
+			devlightClient.setLightState(devlightStates.current().getLightState());
 		}
 	}
 

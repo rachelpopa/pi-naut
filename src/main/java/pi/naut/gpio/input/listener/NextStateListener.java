@@ -3,7 +3,7 @@ package pi.naut.gpio.input.listener;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import io.micronaut.context.event.ApplicationEventPublisher;
-import pi.naut.gpio.bonnet.RefreshDisplayEvent;
+import pi.naut.gpio.bonnet.display.RefreshDisplayEvent;
 import util.StateList;
 
 public class NextStateListener implements GpioPinListenerDigital {

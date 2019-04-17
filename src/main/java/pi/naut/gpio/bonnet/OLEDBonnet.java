@@ -3,6 +3,7 @@ package pi.naut.gpio.bonnet;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import io.micronaut.runtime.event.annotation.EventListener;
+import pi.naut.gpio.bonnet.display.RefreshDisplayEvent;
 import pi.naut.gpio.bonnet.layout.WelcomeLayout;
 import pi.naut.gpio.PinConfiguration;
 import pi.naut.gpio.controller.DisplayController;
@@ -19,17 +20,15 @@ import static java.util.stream.Collectors.toMap;
 @Singleton
 public class OLEDBonnet {
 
-	// Controllers
 	@Inject
 	private PinController pinController;
 	@Inject
 	private DisplayController displayController;
-
 	@Inject
 	private StateList<Layout> layouts;
 
 	@PostConstruct
-	private void initialize() {
+	void initialize() {
 		displayLayout(WelcomeLayout.class);
 		applyGlobalEvents();
 	}
@@ -41,20 +40,20 @@ public class OLEDBonnet {
 		}
 	}
 
-	public void displayLayout(Layout layout) {
-		if (layout == null) {
-			return;
-		}
-		displayController.display(layout);
-		applyLayoutEvents(layout);
-	}
-
 	public void displayLayout(Class layoutClass) {
 		layouts.getList()
 				.stream()
 				.filter(l -> l.getClass().equals(layoutClass))
 				.findAny()
 				.ifPresent(this::displayLayout);
+	}
+
+	private void displayLayout(Layout layout) {
+		if (layout == null) {
+			return;
+		}
+		displayController.display(layout);
+		applyLayoutEvents(layout);
 	}
 
 	private void applyLayoutEvents(Layout layout) {

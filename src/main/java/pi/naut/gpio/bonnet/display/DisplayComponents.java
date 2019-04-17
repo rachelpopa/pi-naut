@@ -80,11 +80,8 @@ public class DisplayComponents {
 		}
 
 		int indexOffset = (currentPage - 1) * MAX_ROWS;
-
-		int maxIndex = MAX_ROWS;
-		if (currentPos % MAX_ROWS > 0 && currentPage != 1) {
-			maxIndex = stateList.getList().size() - ((currentPage - 1) * MAX_ROWS);
-		}
+		int itemsRemaining = stateList.getList().size() - ((currentPage - 1) * MAX_ROWS);
+		int maxIndex = itemsRemaining < MAX_ROWS ? itemsRemaining : MAX_ROWS;
 
 		if (stateList.isCircular() || currentPage > 1) {
 			bufferUpArrow();
