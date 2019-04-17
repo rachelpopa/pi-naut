@@ -125,6 +125,10 @@ public class StateList<T> implements StateIterator<T> {
 		return list;
 	}
 
+	public boolean isCircular() {
+		return circular;
+	}
+
 	private boolean notInitialized() {
 		return pos == -1;
 	}

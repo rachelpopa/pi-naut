@@ -2,7 +2,6 @@ package pi.naut.gpio.bonnet.layout;
 
 import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
-import io.micronaut.context.annotation.Value;
 import pi.naut.gpio.bonnet.Layout;
 import pi.naut.gpio.bonnet.OLEDBonnet;
 import pi.naut.gpio.bonnet.display.DisplayComponents;
@@ -18,14 +17,11 @@ public class WelcomeLayout implements Layout {
 	@Inject
 	private DisplayComponents displayComponents;
 
-	@Value("${github.user}")
-	private String userName;
-
 	@Override
 	public boolean isPrimary() { return false; }
 
 	@Override
-	public void bufferComponents() { displayComponents.startupScreen(userName); }
+	public void bufferComponents() { displayComponents.startupScreen(); }
 
 	@Override
 	public Map<String, GpioPinListener> applyListeners(OLEDBonnet oledBonnet) { return new HashMap<>(); }

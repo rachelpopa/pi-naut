@@ -19,6 +19,7 @@ import static pi.naut.gpio.bonnet.display.DisplayConstants.*;
 
 @Singleton
 public class DisplayComponents {
+	// TODO, refactor this into a component builder
 
 	@Inject
 	private DisplayController displayController;
@@ -29,7 +30,7 @@ public class DisplayComponents {
 		this.controller = displayController.getSsd1306();
 	}
 
-	public void startupScreen(String user) {
+	public void startupScreen() {
 		controller.getGraphics().text(42, MIN_XY, new CodePage1252(), "PI-NAUT");
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -39,7 +40,7 @@ public class DisplayComponents {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		controller.getGraphics().text(21, MAX_Y - FONT_HEIGHT, new CodePage1252(), "WELCOME " + user.toUpperCase());
+		controller.getGraphics().text(21, MAX_Y - FONT_HEIGHT, new CodePage1252(), "PRESS JOYSTICK");
 	}
 
 	public void titleBar(String title) {
@@ -56,7 +57,7 @@ public class DisplayComponents {
 	public void scrollableList(StateList stateList) {
 		bufferList(stateList, (RADIUS_SELECTED * 2) + (PADDING * 2), false);
 		if (stateList.hasCurrent()) {
-			controller.getGraphics().circle(RADIUS_SELECTED, 22 + (TEXT_HEIGHT * (stateList.currentIndex() % MAX_ROWS)), 1);
+			controller.getGraphics().circle(RADIUS_SELECTED, 23 + (TEXT_HEIGHT * (stateList.currentIndex() % MAX_ROWS)), 1);
 		}
 	}
 
@@ -64,26 +65,39 @@ public class DisplayComponents {
 		if (!stateList.hasCurrent()) {
 			return;
 		}
-		int currentPage = stateList.currentIndex() > MAX_ROWS ? stateList.currentIndex() / MAX_ROWS : 1;
-		int maxPages = stateList.getList().size() > MAX_ROWS ? stateList.getList().size() / MAX_ROWS : 1;
-		int maxItems = stateList.getList().size() < MAX_ROWS ? stateList.getList().size() : MAX_ROWS;
 
-		int indexOffset = paginated
-				? (stateList.currentIndex() % maxPages) * MAX_ROWS
-				: (currentPage - 1) * MAX_ROWS;
+		int maxPages = (int) Math.ceil((double) stateList.getList().size() / MAX_ROWS);
 
-		if (currentPage != 1) {
+		int currentPage = 1;
+		int currentPos = stateList.currentIndex() + 1;
+		if (currentPos > MAX_ROWS) {
+			if (!paginated) {
+				currentPage = currentPos / MAX_ROWS;
+				if (currentPos % MAX_ROWS > 0) {
+					currentPage++;
+				}
+			}
+		}
+
+		int indexOffset = (currentPage - 1) * MAX_ROWS;
+
+		int maxIndex = MAX_ROWS;
+		if (currentPos % MAX_ROWS > 0 && currentPage != 1) {
+			maxIndex = stateList.getList().size() - ((currentPage - 1) * MAX_ROWS);
+		}
+
+		if (stateList.isCircular() || currentPage > 1) {
 			bufferUpArrow();
 		}
-		for (int i = 0; i < maxItems; i++) {
+		for (int i = 0; i < maxIndex; i++) {
 			controller.getGraphics().text(
 					xOffset,
-					TEXT_HEIGHT + (TEXT_HEIGHT * (i + 1)) + 1,
+					TEXT_HEIGHT + (TEXT_HEIGHT * (i + 1)),
 					new CodePage1252(),     // TODO, use a monospaced font
 					stateList.getList().get(i + indexOffset).toString()
 			);
 		}
-		if (maxPages > 1 && currentPage != maxPages) {
+		if (stateList.isCircular() || currentPage < maxPages) {
 			bufferDownArrow();
 		}
 	}
