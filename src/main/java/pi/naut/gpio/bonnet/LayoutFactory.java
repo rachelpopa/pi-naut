@@ -3,6 +3,7 @@ package pi.naut.gpio.bonnet;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Primary;
+import pi.naut.gpio.bonnet.layout.DevlightLayout;
 import pi.naut.gpio.bonnet.layout.PullRequestDetailsLayout;
 import pi.naut.gpio.bonnet.layout.PullRequestLayout;
 import pi.naut.gpio.bonnet.layout.RuntimeStatsLayout;
@@ -25,6 +26,8 @@ class LayoutFactory {
 	private RuntimeStatsLayout runtimeStatsLayout;
 	@Inject
 	private PullRequestDetailsLayout pullRequestDetailsLayout;
+	@Inject
+	private DevlightLayout devlightLayout;
 
 	@Bean
 	@Primary
@@ -34,7 +37,8 @@ class LayoutFactory {
 				welcomeLayout,
 				runtimeStatsLayout,
 				pullRequestLayout,
-				pullRequestDetailsLayout
+				pullRequestDetailsLayout,
+				devlightLayout
 		), true);
 	}
 
