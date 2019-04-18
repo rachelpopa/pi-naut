@@ -105,6 +105,8 @@ __Warning:__ If a layout uses multiple stateful services you must pass the name 
 * Scroll horizontally or vertically
 * Flip the display horizontally or vertically
 
+__Note:__ Out of the box there are some generic display components at your disposal.
+
 ### Comprehensive Instructions
 
 #### Pin Configuration
