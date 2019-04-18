@@ -4,6 +4,3 @@ micronaut:
   server:
     port: 8443
 
-github:
-  user:
-  token:
