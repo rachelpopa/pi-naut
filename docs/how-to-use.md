@@ -1,13 +1,13 @@
 ### How To Use
 
-If you are using a pre-configured project read the **Quick Start Guide** to start making layouts! 
+If you are using a pre-configured project read the **Quick Start Guide** to start making layouts. 
 For documentation on how to customize and configure your own project read the **Comprehensive Instructions**.
 
-#### Quick Start Guide
+### Quick Start Guide
 
-##### Layouts
+#### Layouts
 
-A **Layout** is an interface that defines the display components and I/O events for a single... layout. It implements:
+A `Layout` is an interface that defines the display components and I/O events for a single... layout. It implements:
 
 * An `isPrimary()` flag. If true, primary layouts can be cycled through by pressing the **center joystick**.
 
@@ -20,7 +20,7 @@ When implementing the `OLEDBonnet` to display layouts, two things will happen wh
 1. The current state of all display components are **buffered** and **sent** to the display.
 2. All prior layout events are removed and the new layout event are added to the pins defined in the layout.
 
-This is an example of a **Hello World layout** with a title component and a mock events added to **BUTTON_X** and **BUTTON_Y**.
+This is an example of a **Hello World** layout with a title component and mock events added to **button X** and **button Y**.
 
 ```java
 @Singleton
@@ -58,15 +58,16 @@ public class HelloWorldLayout implements Layout {
 
 }
 ```
+Once you create a `Layout`, add it to the `LayoutFactory` to include it.
 
-__Note:__ Once you create a `Layout`, add it to the `LayoutFactory` to include it. 
+__Info:__ Refer to Pi4J docs for creating [listeners](https://pi4j.com/1.2/example/listener.html) and [triggers](https://pi4j.com/1.2/example/trigger.html).
 
-##### Application State, Services, and Refresh Display Events
+#### Application State, Services, and Refresh Display Events
 
 It is likely that you will want to share stateful services across multiple layouts. 
-The `ApplicationState` can then be injected into a `Layout` to provide the latest state of that service when it is displayed or refreshed.
-Services can be **updated** via [@Scheduled](https://docs.micronaut.io/latest/guide/index.html#scheduling), and when the state of a service is updated you can use [ApplicationEventPublisher](https://docs.micronaut.io/latest/guide/index.html#contextEvents) to refresh the display.
-Simply publish a `RefreshDisplayEvent` and pass the **class** of the layout(s) that call this service.
+The `ApplicationState` can be used to store and provide the latest state of a service for when it is displayed or refreshed in a layout.
+Services can be updated via [@Scheduled](https://docs.micronaut.io/latest/guide/index.html#scheduling), and when the state of a service is updated you can publish an event with the [ApplicationEventPublisher](https://docs.micronaut.io/latest/guide/index.html#contextEvents) to refresh the display.
+Simply publish a `RefreshDisplayEvent` and pass the **class** of the layout(s) that use that data.
 
 An example implementation of a mock stateful service:
 
@@ -90,14 +91,23 @@ public class ApplicationState {
 }
 ```
 
-__Note:__ The `StateList` is a utility provided to make it easier to persist the state of a list and is not required to use. 
-It is a list with a pre-instantiated `StateIterator` that allows you to iterate through your state (previous, current, and next) and still returns the origin list.
+__Note:__ The `StateList` is a utility provided in this project to make it easier to persist the state of a list and is optional to use.  It is a list with a pre-instantiated `StateIterator` that allows you to iterate through your state (previous, current, and next) and still returns the origin list.
 
 __Warning:__ If a layout uses multiple stateful services you must pass the name of that layout to all the refresh events or your layout may not be refreshed when you expect!
 
-#### Comprehensive Instructions
+#### Display Components
 
-##### Pin Configuration
+`DisplayComponents` can be injected into layouts and used to buffer components to the display. When implementing a component you can pass it data and use the `SSD1306` methods to create your component. It provides a way to:
+
+* Display text
+* Draw primitive lines and shapes
+* Set individual pixels or buffer entire pixel arrays
+* Scroll horizontally or vertically
+* Flip the display horizontally or vertically
+
+### Comprehensive Instructions
+
+#### Pin Configuration
 
 You can define which pins are connected to each I/O in the [PinConfiguration](src/main/java/pi/naut/gpio/config/PinConfiguration.java). 
 Each pin is instantiated in a static map and referred to by a logical name that describes the pin. 
@@ -116,18 +126,18 @@ public class PinConfiguration {
 }
 ```
 
-##### Pin Controller
+#### Pin Controller
 
 Creates a singleton `GpioController` for provisioning and accessing the GPIO. 
 Injecting it gives you access to the pins defined in the `PinConfiguration`. 
 All configured pins should be provisioned here.
 
-##### Display Controller
+#### Display Controller
 
 Creates a singleton `SSD1306` controller for an OLED display component.
 `SSD1306` has distinct methods for **buffering** and **displaying** arrays of pixel states, so the `DisplayController` implements convenience methods for displaying a `Layout` in it's entirety.
 
-##### OLED Bonnet
+#### OLED Bonnet
 
 The `OLEDBonnet` injects both `PinController` and `DisplayController`. It is the default implementation for displaying a `Layout` on the screen while applying I/O events to buttons and switches. 
 
