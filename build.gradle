@@ -51,10 +51,6 @@ dependencies {
 
     compile "com.pi4j:pi4j-core:1.2-SNAPSHOT"
     compile "org.projectlombok:lombok:1.18.4"
-    implementation "com.github.fauxpark:oled-core:v2.0"
-
-    compile name: "devlights-api-1.0.0-alpha"
-    compile name: "devlights-client-1.0.0-alpha"
 }
 
 shadowJar {

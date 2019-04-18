@@ -3,7 +3,3 @@ micronaut:
     name: pi-naut
   server:
     port: 8443
-
-github:
-  user:
-  token:
