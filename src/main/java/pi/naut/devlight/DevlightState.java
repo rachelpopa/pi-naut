@@ -1,5 +1,7 @@
 package pi.naut.devlight;
 
+import devlights.api.LightState;
+
 public class DevlightState {
 
 	private String description;

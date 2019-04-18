@@ -2,10 +2,10 @@ package pi.naut.gpio.bonnet.layout;
 
 import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
+import devlights.api.LightStateFactory;
+import devlights.client.DevlightClient;
 import io.micronaut.context.event.ApplicationEventPublisher;
-import pi.naut.devlight.DevlightClient;
 import pi.naut.devlight.DevlightState;
-import pi.naut.devlight.LightState;
 import pi.naut.gpio.bonnet.Layout;
 import pi.naut.gpio.bonnet.OLEDBonnet;
 import pi.naut.gpio.bonnet.display.DisplayComponents;
@@ -19,8 +19,8 @@ import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
 
+import static devlights.api.HueConstants.*;
 import static java.util.Arrays.asList;
-import static pi.naut.devlight.HueConstants.*;
 import static pi.naut.gpio.PinConfiguration.*;
 
 @Singleton
@@ -34,15 +34,15 @@ public class DevlightLayout implements Layout {
 	private ApplicationEventPublisher applicationEventPublisher;
 
 	private StateList<DevlightState> devlightStates = new StateList<>(asList(
-			new DevlightState("BLINK RED", blink(COLOR_RED)),
-			new DevlightState("BLINK YELLOW", blink(COLOR_YELLOW)),
-			new DevlightState("BLINK GREEN", blink(COLOR_GREEN)),
-			new DevlightState("BLINK BLUE", blink(COLOR_BLUE)),
-			new DevlightState("SOLID RED", solid(COLOR_RED)),
-			new DevlightState("SOLID YELLOW", solid(COLOR_YELLOW)),
-			new DevlightState("SOLID GREEN", solid(COLOR_GREEN)),
-			new DevlightState("SOLID BLUE", solid(COLOR_BLUE)),
-			new DevlightState("TURN OFF", turnOffLight())
+			new DevlightState("BLINK RED", LightStateFactory.blink(COLOR_RED)),
+			new DevlightState("BLINK YELLOW", LightStateFactory.blink(COLOR_YELLOW)),
+			new DevlightState("BLINK GREEN", LightStateFactory.blink(COLOR_GREEN)),
+			new DevlightState("BLINK BLUE", LightStateFactory.blink(COLOR_BLUE)),
+			new DevlightState("SOLID RED", LightStateFactory.solid(COLOR_RED)),
+			new DevlightState("SOLID YELLOW", LightStateFactory.solid(COLOR_YELLOW)),
+			new DevlightState("SOLID GREEN", LightStateFactory.solid(COLOR_GREEN)),
+			new DevlightState("SOLID BLUE", LightStateFactory.solid(COLOR_BLUE)),
+			new DevlightState("TURN OFF", LightStateFactory.off())
 	));
 
 	public static final String TITLE = "DEV LIGHTS";
@@ -73,35 +73,6 @@ public class DevlightLayout implements Layout {
 	@Override
 	public Map<String, GpioTrigger> applyTriggers(OLEDBonnet oledBonnet) {
 		return new HashMap<>();
-	}
-
-	private LightState blink(double[] xyColor) {
-		LightState lightState = new LightState();
-		lightState.setOn(true);
-		lightState.setBri(BRI_MAX);
-		lightState.setSat(SAT_MAX);
-		lightState.setXy(xyColor);
-		lightState.setTransitiontime(1);
-		lightState.setAlert(ALERT_L_SELECT);
-		return lightState;
-	}
-
-	private LightState solid(double[] xyColor) {
-		LightState lightState = new LightState();
-		lightState.setOn(true);
-		lightState.setBri(BRI_MAX);
-		lightState.setSat(SAT_MAX);
-		lightState.setTransitiontime(10);
-		lightState.setXy(xyColor);
-		lightState.setAlert(ALERT_NONE);
-		return lightState;
-	}
-
-	private LightState turnOffLight() {
-		LightState lightState = new LightState();
-		lightState.setOn(false);
-		lightState.setAlert(ALERT_NONE);
-		return lightState;
 	}
 
 }

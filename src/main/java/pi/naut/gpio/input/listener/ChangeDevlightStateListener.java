@@ -2,7 +2,7 @@ package pi.naut.gpio.input.listener;
 
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
-import pi.naut.devlight.DevlightClient;
+import devlights.client.DevlightClient;
 import pi.naut.devlight.DevlightState;
 import util.StateList;
 
