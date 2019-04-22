@@ -1,6 +1,6 @@
 ### How To Use
 
-If you are using a pre-configured project read the **Quick Start Guide** to start making layouts. 
+If you are updated to an `oled-bonnet` branch or have a pre-configured project read the **Quick Start Guide** to start making layouts. 
 For documentation on how to customize and configure your own project read the **Comprehensive Instructions**.
 
 ### Quick Start Guide
@@ -13,61 +13,66 @@ A `Layout` is an interface that defines the display components and I/O events fo
 
 * A `bufferComponents()` method that buffers all the required display components in a builder like fashion.
 
-* The `applyListeners()` and `applyTriggers()` methods which use map configurations to apply events to specific pins.
+* The `applyListeners()` and `applyTriggers()` methods which apply layout events to specific pins.
 
 When implementing the `OLEDBonnet` to display layouts, two things will happen when it is displayed:
 
 1. The current state of all display components are **buffered** and **sent** to the display.
-2. All prior layout events are removed and the new layout event are added to the pins defined in the layout.
+2. All layout events are removed and the new layout events are applied to the pins defined in the layout.
 
-This is an example of a **Hello World** layout with a title component and mock events added to **button X** and **button Y**.
+An example **Hello World** layout with some display components and events added to **button X** and **button Y**:
 
 ```java
 @Singleton
 public class HelloWorldLayout implements Layout { 
 	
 	@Inject
+	private ApplicationState applicationState;
+	@Inject
 	private DisplayComponents displayComponents;
 
 	public static final String NAME = "Hello World";
 
-	@Override
-	public String name() { return NAME; }
-	
 	@Override
 	public boolean isPrimary() { return true; }
 	
 	@Override
 	public void bufferComponents() { 
 		displayComponents.title(NAME);
+		displayComponents.someComponentWithData(applicationState.getMockData());
 	}
 
 	@Override
 	public Map<String, GpioPinListener> applyListeners(OLEDBonnet oledBonnet) { 
 		Map<String, GpioPinListener> listeners = new HashMap<>();
-		listeners.put(PinConfiguration.BUTTON_X, new MockListener());
+		listeners.put(PinConfiguration.BUTTON_X, new MockListener(oledBonnet));
 		return listeners;
 	}
 
 	@Override
 	public Map<String, GpioTrigger> applyTriggers(OLEDBonnet oledBonnet) { 
-				Map<String, GpioTrigger> triggers = new HashMap<>();
-        		triggers.put(PinConfiguration.BUTTON_Y, new MockTrigger());
-        		return triggers;
+		Map<String, GpioTrigger> triggers = new HashMap<>();
+		triggers.put(PinConfiguration.BUTTON_Y, new MockTrigger(oledBonnet));
+		return triggers;
 	 }
 
 }
 ```
-Once you create a `Layout`, add it to the `LayoutFactory` to include it.
+Once you create a `Layout` include it in the `layouts` bean defined in the `LayoutFactory`.
+
+__Note:__ Primary layouts will be cycled through in the order they are defined.
 
 __Info:__ Refer to Pi4J docs for creating [listeners](https://pi4j.com/1.2/example/listener.html) and [triggers](https://pi4j.com/1.2/example/trigger.html).
+
+__Tip:__ If you need access to data or beans in your event, inject it into your layout and pass it via the events constructor. 
+Although you may be tempted to use dependency injection you will likely tie yourself into a circular dependency knot. 
 
 #### Application State, Services, and Refresh Display Events
 
 It is likely that you will want to share stateful services across multiple layouts. 
 The `ApplicationState` can be used to store and provide the latest state of a service for when it is displayed or refreshed in a layout.
-Services can be updated via [@Scheduled](https://docs.micronaut.io/latest/guide/index.html#scheduling), and when the state of a service is updated you can publish an event with the [ApplicationEventPublisher](https://docs.micronaut.io/latest/guide/index.html#contextEvents) to refresh the display.
-Simply publish a `RefreshDisplayEvent` and pass the **class** of the layout(s) that use that data.
+Services can be updated via [@Scheduled](https://docs.micronaut.io/latest/guide/index.html#scheduling) jobs, and when the state of a service is updated you can publish an event with the [ApplicationEventPublisher](https://docs.micronaut.io/latest/guide/index.html#contextEvents) to refresh the display.
+Simply publish a `RefreshDisplayEvent` and pass the **class** of the layout(s) that you want to refresh.
 
 An example implementation of a mock stateful service:
 
@@ -91,21 +96,24 @@ public class ApplicationState {
 }
 ```
 
-__Note:__ The `StateList` is a utility provided in this project to make it easier to persist the state of a list and is optional to use.  It is a list with a pre-instantiated `StateIterator` that allows you to iterate through your state (previous, current, and next) and still returns the origin list.
+__Note:__ The `StateList` is a utility provided in this project to make it easier to persist the state of a list and is optional to use. 
+It is a list with a pre-instantiated `StateIterator` that allows you to iterate through your state (previous, current, and next) and still returns the origin list.
 
-__Warning:__ If a layout uses multiple stateful services you must pass the name of that layout to all the refresh events or your layout may not be refreshed when you expect!
+__Warning:__ If a layout uses multiple stateful services you must pass the layout class to all the refresh events or your display may not be refreshed when you expect!
 
 #### Display Components
 
-`DisplayComponents` can be injected into layouts and used to buffer components to the display. When implementing a component you can pass it data and use the `SSD1306` methods to create your component. It provides a way to:
+`DisplayComponents` can be injected into layouts and used to buffer components to the display. 
+When implementing a component you can pass it data and use the `SSD1306`'s methods and `DisplayConstants` to:
 
 * Display text
-* Draw primitive lines and shapes
+* Draw lines and basic shapes
 * Set individual pixels or buffer entire pixel arrays
 * Scroll horizontally or vertically
 * Flip the display horizontally or vertically
+* Invert the display
 
-__Note:__ Out of the box there are some generic display components at your disposal.
+__Note:__ Out of the box there are a couple generic components at your disposal.
 
 ### Comprehensive Instructions
 
