@@ -5,4 +5,6 @@ import io.micronaut.context.annotation.Factory;
 @Factory
 class ApplicationConfiguration {
 
+	// Add bean configuration here
+
 }
