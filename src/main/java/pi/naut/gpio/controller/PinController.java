@@ -1,32 +1,37 @@
-package pi.naut.gpio;
+package pi.naut.gpio.controller;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.PinPullResistance;
+import io.micronaut.discovery.event.ServiceShutdownEvent;
+import io.micronaut.runtime.event.annotation.EventListener;
+import pi.naut.gpio.PinConfiguration;
 
 import javax.inject.Singleton;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
-public class InputController {
+public class PinController {
 
-	private GpioController gpioController = GpioFactory.getInstance();
+	private final GpioController gpioController = GpioFactory.getInstance();
 	private Map<String, GpioPinDigitalInput> inputPins = new ConcurrentHashMap<>();
 
-	InputController() {
-		PinConfiguration.DIGITAL_INPUTS.forEach((key, value) ->
+	PinController() {
+		System.out.println("--> GPIO STARTUP");
+		PinConfiguration.DIGITAL_INPUT_PINS.forEach((key, value) ->
 				inputPins.computeIfAbsent(key, e -> {
 					GpioPinDigitalInput gpioPinDigitalInput = gpioController.provisionDigitalInputPin(value, key, PinPullResistance.PULL_UP);
-					// TODO, set this when we get a teardown function working
-//					gpioPinDigitalInput.setShutdownOptions(true, PinState.LOW, PinPullResistance.OFF);
+					gpioPinDigitalInput.setShutdownOptions(false);
 					return gpioPinDigitalInput;
 				}));
 	}
 
-	public GpioController getGpioController() {
-		return gpioController;
+	@EventListener
+	void onShutdown(ServiceShutdownEvent event) {
+		System.out.println("--> GPIO SHUTDOWN");
+		gpioController.shutdown();
 	}
 
 	public Map<String, GpioPinDigitalInput> getInputPins() {

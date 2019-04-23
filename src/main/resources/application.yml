@@ -2,8 +2,4 @@ micronaut:
   application:
     name: pi-naut
   server:
-    port: 8888
-
-github:
-  user:
-  token:
+    port: 8443

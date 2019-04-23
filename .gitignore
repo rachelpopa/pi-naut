@@ -1,6 +1,6 @@
 *.class
 
-# Package Files #
+# Package Files
 *.war
 *.ear
 
@@ -22,3 +22,4 @@ Thumbs.db
 build/
 target/
 out/
+*.img
