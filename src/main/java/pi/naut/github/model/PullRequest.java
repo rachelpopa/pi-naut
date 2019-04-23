@@ -7,13 +7,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class PullRequest {
 	private long id;
 	private int number;
+	private String url;
 	private String title;
-	@JsonProperty("repo")
-	private Repository repository;
-	private StateType state;
-	private boolean merged;
 	private boolean mergable;
+	@JsonProperty("mergeable_state")
 	private String mergableState;
+	@JsonProperty("review_comments")
+	private int reviewComments;
 
 	public long getId() {
 		return id;
@@ -39,30 +39,6 @@ public class PullRequest {
 		this.title = title;
 	}
 
-	public Repository getRepository() {
-		return repository;
-	}
-
-	public void setRepository(Repository repository) {
-		this.repository = repository;
-	}
-
-	public StateType getState() {
-		return state;
-	}
-
-	public void setState(StateType state) {
-		this.state = state;
-	}
-
-	public boolean isMerged() {
-		return merged;
-	}
-
-	public void setMerged(boolean merged) {
-		this.merged = merged;
-	}
-
 	public boolean isMergable() {
 		return mergable;
 	}
@@ -82,5 +58,21 @@ public class PullRequest {
 	@Override
 	public String toString() {
 		return title;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public int getReviewComments() {
+		return reviewComments;
+	}
+
+	public void setReviewComments(int reviewComments) {
+		this.reviewComments = reviewComments;
 	}
 }

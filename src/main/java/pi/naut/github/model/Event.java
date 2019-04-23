@@ -9,7 +9,6 @@ public class Event {
 	private String id;
 	private String type;
 	private LinkedHashMap payload;
-	private Repository repository;
 
 	public String getId() {
 		return id;
@@ -35,11 +34,4 @@ public class Event {
 		this.payload = payload;
 	}
 
-	public Repository getRepository() {
-		return repository;
-	}
-
-	public void setRepository(Repository repository) {
-		this.repository = repository;
-	}
 }

@@ -42,8 +42,7 @@ public class PullRequestDetailsLayout implements Layout {
 		return new StateList<>(asList(
 				"TITLE: " + current.getTitle(),
 				"NO: " + current.getNumber(),
-				"MERGEABLE: " + current.isMergable(),
-				"MERGED: " + current.isMerged()
+				"MERGEABLE: " + current.isMergable()
 		));
 	}
 

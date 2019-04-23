@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class PullRequestEvent {
 	private ActionType action;
 	@JsonProperty("pull_request")
-	private PullRequest pullRequest;
+	private PullRequestPayload pullRequestPayload;
 
 	public ActionType getAction() {
 		return action;
@@ -17,11 +17,11 @@ public class PullRequestEvent {
 		this.action = action;
 	}
 
-	public PullRequest getPullRequest() {
-		return pullRequest;
+	public PullRequestPayload getPullRequestPayload() {
+		return pullRequestPayload;
 	}
 
-	public void setPullRequest(PullRequest pullRequest) {
-		this.pullRequest = pullRequest;
+	public void setPullRequestPayload(PullRequestPayload pullRequestPayload) {
+		this.pullRequestPayload = pullRequestPayload;
 	}
 }
