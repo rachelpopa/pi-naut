@@ -2,10 +2,11 @@ package pi.naut.gpio.bonnet;
 
 import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
+import io.micronaut.discovery.event.ServiceStartedEvent;
 import io.micronaut.runtime.event.annotation.EventListener;
+import pi.naut.gpio.PinConfiguration;
 import pi.naut.gpio.bonnet.display.RefreshDisplayEvent;
 import pi.naut.gpio.bonnet.layout.WelcomeLayout;
-import pi.naut.gpio.PinConfiguration;
 import pi.naut.gpio.controller.DisplayController;
 import pi.naut.gpio.controller.PinController;
 import util.StateList;
@@ -32,6 +33,8 @@ public class OLEDBonnet {
 		displayLayout(WelcomeLayout.class);
 		applyGlobalEvents();
 	}
+
+	@EventListener void onStartup(ServiceStartedEvent event) {}
 
 	@EventListener
 	void refreshDisplay(RefreshDisplayEvent refreshDisplayEvent) {
