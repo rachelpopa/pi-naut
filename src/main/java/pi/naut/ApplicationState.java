@@ -23,12 +23,12 @@ public class ApplicationState {
 	@Inject
 	private GithubService githubService;
 
-	private StateList<PullRequest> pullRequests;
+	private StateList<PullRequest> openPullRequests;
 	private StateList<String> runtimeStats;
 
 	@Scheduled(initialDelay = "20s", fixedRate = "1m")
 	void updatePullRequests() {
-		this.pullRequests = new StateList<>(githubService.getOpenPullRequests());
+		this.openPullRequests = new StateList<>(githubService.getOpenPullRequests());
 		applicationEventPublisher.publishEvent(new RefreshDisplayEvent(PullRequestLayout.class, PullRequestDetailsLayout.class));
 	}
 
@@ -42,11 +42,11 @@ public class ApplicationState {
 		applicationEventPublisher.publishEvent(new RefreshDisplayEvent(RuntimeStatsLayout.class));
 	}
 
-	public StateList<PullRequest> getPullRequests() {
-		if (pullRequests == null) {
-			this.pullRequests = new StateList<>(githubService.getOpenPullRequests());
+	public StateList<PullRequest> getOpenPullRequests() {
+		if (openPullRequests == null) {
+			this.openPullRequests = new StateList<>(githubService.getOpenPullRequests());
 		}
-		return pullRequests;
+		return openPullRequests;
 	}
 
 	public StateList<String> getRuntimeStats() {

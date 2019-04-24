@@ -33,7 +33,7 @@ public class PullRequestLayout implements Layout {
 
 	@PostConstruct
 	void initialize() {
-		applicationState.getPullRequests();
+		applicationState.getOpenPullRequests();
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class PullRequestLayout implements Layout {
 	@Override
 	public void bufferComponents() {
 		displayComponents.titleBar(TITLE);
-		displayComponents.scrollableList(applicationState.getPullRequests());
+		displayComponents.scrollableList(applicationState.getOpenPullRequests());
 	}
 
 	@Override
@@ -50,9 +50,9 @@ public class PullRequestLayout implements Layout {
 		Map<String, GpioPinListener> listenerMap = new HashMap<>();
 
 		listenerMap.put(JOYSTICK_UP, new PreviousStateListener(
-				applicationEventPublisher, applicationState.getPullRequests(), PullRequestLayout.class));
+				applicationEventPublisher, applicationState.getOpenPullRequests(), PullRequestLayout.class));
 		listenerMap.put(JOYSTICK_DOWN, new NextStateListener(
-				applicationEventPublisher, applicationState.getPullRequests(), PullRequestLayout.class));
+				applicationEventPublisher, applicationState.getOpenPullRequests(), PullRequestLayout.class));
 
 		listenerMap.put(BUTTON_B, new NavigateToLayoutListener(oledBonnet, PullRequestDetailsLayout.class));
 

@@ -26,23 +26,22 @@ public class PullRequestDetailsLayout implements Layout {
 	@Inject
 	private ApplicationState applicationState;
 
-	public static final String TITLE = "PR DETAILS";
-
 	@Override
 	public boolean isPrimary() { return false; }
 
 	@Override
 	public void bufferComponents() {
-		displayComponents.titleBar(TITLE);
+		displayComponents.titleBar(applicationState.getOpenPullRequests().current().getTitle(), false);
 		displayComponents.paginatedList(getPullRequestDetails());
 	}
 
-	private StateList getPullRequestDetails() {
-		PullRequest current = applicationState.getPullRequests().current();
+	private StateList<String> getPullRequestDetails() {
+		PullRequest currentPullRequest = applicationState.getOpenPullRequests().current();
 		return new StateList<>(asList(
-				"TITLE: " + current.getTitle(),
-				"NO: " + current.getNumber(),
-				"MERGEABLE: " + current.isMergable()
+				"NUMBER: " + currentPullRequest.getNumber(),
+				"MERGEABLE: " + currentPullRequest.isMergable(),
+				"MERGE STATE: " + currentPullRequest.getMergableState(),
+				"REVIEW COMMENTS: " + currentPullRequest.getReviewComments()
 		));
 	}
 
