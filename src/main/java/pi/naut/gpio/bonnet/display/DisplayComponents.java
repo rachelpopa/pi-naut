@@ -44,8 +44,13 @@ public class DisplayComponents {
 	}
 
 	public void titleBar(String title) {
+		titleBar(title, true);
+	}
+
+	public void titleBar(String title, boolean centered) {
 		if (StringUtils.isNotEmpty(title)) {
-			controller.getGraphics().text(25, MIN_XY, new CodePage1252(), title);
+			int offset = centered ? 25 : 0;
+			controller.getGraphics().text(offset, MIN_XY, new CodePage1252(), title);
 			controller.getGraphics().line(MIN_XY, TEXT_HEIGHT, MAX_X, TEXT_HEIGHT);
 		}
 	}
@@ -76,6 +81,8 @@ public class DisplayComponents {
 				if (currentPos % MAX_ROWS > 0) {
 					currentPage++;
 				}
+			} else {
+				currentPage = (currentPos % maxPages) + 1;
 			}
 		}
 
