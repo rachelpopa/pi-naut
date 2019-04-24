@@ -20,41 +20,45 @@ When implementing the `OLEDBonnet` to display layouts, two things will happen wh
 1. The current state of all display components are **buffered** and **sent** to the display.
 2. All layout events are removed and the new layout events are applied to the pins defined in the layout.
 
-An example **Hello World** layout with some display components and events added to **button X** and **button Y**:
+An example **Hello World** layout with some display components and events added to **button A** and **button B**:
 
 ```java
 @Singleton
 public class HelloWorldLayout implements Layout { 
 	
 	@Inject
-	private ApplicationState applicationState;
-	@Inject
 	private DisplayComponents displayComponents;
-
-	public static final String NAME = "Hello World";
 
 	@Override
 	public boolean isPrimary() { return true; }
-	
+
 	@Override
-	public void bufferComponents() { 
-		displayComponents.title(NAME);
-		displayComponents.someComponentWithData(applicationState.getMockData());
+	public void bufferComponents() {
+		displayComponents.titleBar("Hello World");
 	}
 
 	@Override
-	public Map<String, GpioPinListener> applyListeners(OLEDBonnet oledBonnet) { 
+	public Map<String, GpioPinListener> applyListeners(OLEDBonnet oledBonnet) {
 		Map<String, GpioPinListener> listeners = new HashMap<>();
-		listeners.put(PinConfiguration.BUTTON_X, new MockListener(oledBonnet));
+
+		listeners.put(PinConfiguration.BUTTON_A, (GpioPinListenerDigital) event -> {
+			System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
+		});
+
 		return listeners;
 	}
 
 	@Override
-	public Map<String, GpioTrigger> applyTriggers(OLEDBonnet oledBonnet) { 
+	public Map<String, GpioTrigger> applyTriggers(OLEDBonnet oledBonnet) {
 		Map<String, GpioTrigger> triggers = new HashMap<>();
-		triggers.put(PinConfiguration.BUTTON_Y, new MockTrigger(oledBonnet));
+
+		triggers.put(PinConfiguration.BUTTON_B, new GpioCallbackTrigger(() -> {
+			System.out.println(" --> GPIO TRIGGER CALLBACK RECEIVED");
+			return null;
+		}));
+
 		return triggers;
-	 }
+	}
 
 }
 ```
