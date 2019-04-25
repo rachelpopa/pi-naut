@@ -2,8 +2,6 @@
 
 An open-source seed project built on [Micronaut](https://micronaut.io/) and [Pi4J](https://pi4j.com/1.2/) for running modern Java applications on a Pi.
 
-#### [Getting Started](docs/getting-started.md)
-
 #### [How to Use](docs/how-to-use.md)
 
 #### [Development Workflow](docs/workflow.md)

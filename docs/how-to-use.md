@@ -9,18 +9,13 @@ For documentation on how to customize and configure your own project read the **
 
 A `Layout` is an interface that defines the display components and I/O events for a single... layout. It implements:
 
-* An `isPrimary()` flag. If true, primary layouts can be cycled through by pressing the **center joystick**.
+* An `isPrimary()` flag. If true, **primary** layouts can be cycled through by pressing the **center joystick**.
 
 * A `bufferComponents()` method that buffers all the required display components in a builder like fashion.
 
 * The `applyListeners()` and `applyTriggers()` methods which apply layout events to specific pins.
 
-When implementing the `OLEDBonnet` to display layouts, two things will happen when it is displayed:
-
-1. The current state of all display components are **buffered** and **sent** to the display.
-2. All layout events are removed and the new layout events are applied to the pins defined in the layout.
-
-An example **Hello World** layout with some display components and events added to **button A** and **button B**:
+An example **Hello World** layout with a display components and events added to **button A** and **button B**:
 
 ```java
 @Singleton
@@ -62,14 +57,29 @@ public class HelloWorldLayout implements Layout {
 
 }
 ```
+
 Once you create a `Layout` include it in the `layouts` bean defined in the `LayoutFactory`.
 
-__Note:__ Primary layouts will be cycled through in the order they are defined.
+__Note:__ Primary layouts will be cycled through with the **center joystick** in the order they are defined.
 
 __Info:__ Refer to Pi4J docs for creating [listeners](https://pi4j.com/1.2/example/listener.html) and [triggers](https://pi4j.com/1.2/example/trigger.html).
 
-__Tip:__ If you need access to data or beans in your event, inject it into your layout and pass it via the events constructor. 
-Although you may be tempted to use dependency injection you will likely tie yourself into a circular dependency knot. 
+__Tip:__ If you are creating re-usable event classes and need access to the `OLEDBonnet`, data, or other beans in your events, inject them into your layouts and pass it to the event via the events constructor. 
+Although you may be tempted to use dependency injection in your event classes, you will likely tie yourself into a circular dependency knot. 
+
+#### Display Components
+
+`DisplayComponents` can be injected into layouts and used to buffer components to the display. 
+When implementing a component you can pass it data and use the `SSD1306`'s methods and `DisplayConstants` to:
+
+* Display text
+* Draw lines and basic shapes
+* Set individual pixels or buffer entire pixel arrays
+* Scroll horizontally or vertically
+* Flip the display horizontally or vertically
+* Invert the display
+
+__Note:__ Out of the box there is a **title bar** and **list components** at your disposal.
 
 #### Application State, Services, and Refresh Display Events
 
@@ -93,7 +103,7 @@ public class ApplicationState {
 
 	@Scheduled(fixedRate = "1m")
 	void updateMockStateList() {
-		this.mockStateList = new StateList<>(mockService.getMockList());
+		mockStateList.next(mockService.getMockList());
 		applicationEventPublisher.publishEvent(new RefreshDisplayEvent(MyLayoutOne.NAME, MyLayoutTwo.NAME));
 	}
 	public StateList<PullRequest> getMockStateList() { return mockStateList; }
@@ -101,23 +111,12 @@ public class ApplicationState {
 ```
 
 __Note:__ The `StateList` is a utility provided in this project to make it easier to persist the state of a list and is optional to use. 
-It is a list with a pre-instantiated `StateIterator` that allows you to iterate through your state (previous, current, and next) and still returns the origin list.
+It is a list with a pre-instantiated `StateIterator` that allows you to iterate through your state (previous, current, and next) and provides utilities for getting data from the original list as well setting the `next()` state.
+Dive into the `StateList` class for more documentation.
+
+__Note:__ If you run into a scenario where you need to populate a state prior to the scheduled job updating it for the first time, you can either lazy load it in the getter or use a `@PostConstruct` method to instantiate your data once the bean is created.
 
 __Warning:__ If a layout uses multiple stateful services you must pass the layout class to all the refresh events or your display may not be refreshed when you expect!
-
-#### Display Components
-
-`DisplayComponents` can be injected into layouts and used to buffer components to the display. 
-When implementing a component you can pass it data and use the `SSD1306`'s methods and `DisplayConstants` to:
-
-* Display text
-* Draw lines and basic shapes
-* Set individual pixels or buffer entire pixel arrays
-* Scroll horizontally or vertically
-* Flip the display horizontally or vertically
-* Invert the display
-
-__Note:__ Out of the box there are a couple generic components at your disposal.
 
 ### Comprehensive Instructions
 
