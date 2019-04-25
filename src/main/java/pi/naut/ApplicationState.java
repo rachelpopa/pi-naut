@@ -10,6 +10,7 @@ import pi.naut.gpio.bonnet.layout.PullRequestLayout;
 import pi.naut.gpio.bonnet.layout.RuntimeStatsLayout;
 import util.StateList;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -26,34 +27,32 @@ public class ApplicationState {
 	private StateList<PullRequest> openPullRequests;
 	private StateList<String> runtimeStats;
 
-	@Scheduled(initialDelay = "20s", fixedRate = "1m")
-	void updatePullRequests() {
-		this.openPullRequests = new StateList<>(githubService.getOpenPullRequests());
-		applicationEventPublisher.publishEvent(new RefreshDisplayEvent(PullRequestLayout.class, PullRequestDetailsLayout.class));
+	@PostConstruct
+	void initialize() {
+		openPullRequests = new StateList<>(githubService.getOpenPullRequests());
+		runtimeStats = getRuntimeStats();
 	}
 
-	@Scheduled(initialDelay = "20s", fixedRate = "1s")
+	@Scheduled(fixedRate = "1m")
+	void updatePullRequests() {
+		openPullRequests.next(githubService.getOpenPullRequests());
+		applicationEventPublisher.publishEvent(new RefreshDisplayEvent(PullRequestLayout.class, PullRequestDetailsLayout.class));
+	}
+	public StateList<PullRequest> getOpenPullRequests() { return openPullRequests; }
+
+	@Scheduled(fixedRate = "1s")
 	void updateRuntimeStats() {
-		this.runtimeStats = new StateList<>(asList(
+		runtimeStats = runtimeStats();
+		applicationEventPublisher.publishEvent(new RefreshDisplayEvent(RuntimeStatsLayout.class));
+	}
+	public StateList<String> getRuntimeStats() { return runtimeStats; }
+
+	private StateList<String> runtimeStats() {
+		return new StateList<>(asList(
 				"Cores: " + Runtime.getRuntime().availableProcessors(),
 				"Free mem: " + Runtime.getRuntime().freeMemory(),
 				"Max mem: " + Runtime.getRuntime().maxMemory(),
 				"Tot mem: " + Runtime.getRuntime().totalMemory()));
-		applicationEventPublisher.publishEvent(new RefreshDisplayEvent(RuntimeStatsLayout.class));
-	}
-
-	public StateList<PullRequest> getOpenPullRequests() {
-		if (openPullRequests == null) {
-			this.openPullRequests = new StateList<>(githubService.getOpenPullRequests());
-		}
-		return openPullRequests;
-	}
-
-	public StateList<String> getRuntimeStats() {
-		if (runtimeStats == null) {
-			updateRuntimeStats();
-		}
-		return this.runtimeStats;
 	}
 
 }

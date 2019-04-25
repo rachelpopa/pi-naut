@@ -5,6 +5,7 @@ import pi.naut.github.model.EventType;
 import pi.naut.github.model.PullRequest;
 import pi.naut.github.model.PullRequestEvent;
 import pi.naut.github.model.PullRequestPayload;
+import pi.naut.github.model.PullRequestState;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -30,6 +31,7 @@ public class GithubService {
 					.map(PullRequestPayload::getUrl)
 					.map(this::retrievePullRequest)
 					.filter(Objects::nonNull)
+					.filter(pr -> pr.getState() == PullRequestState.open)
 					.collect(toList());
 	}
 

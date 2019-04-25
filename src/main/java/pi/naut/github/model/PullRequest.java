@@ -5,19 +5,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PullRequest {
+
 	private long id;
 	private int number;
 	private String url;
 	private String title;
+	private PullRequestState state;
 	private boolean mergable;
 	@JsonProperty("mergeable_state")
 	private String mergableState;
 	@JsonProperty("review_comments")
 	private int reviewComments;
 
-	public long getId() {
-		return id;
-	}
+	public long getId() { return id; }
 
 	public void setId(long id) {
 		this.id = id;
@@ -55,11 +55,6 @@ public class PullRequest {
 		this.mergableState = mergableState;
 	}
 
-	@Override
-	public String toString() {
-		return title;
-	}
-
 	public String getUrl() {
 		return url;
 	}
@@ -75,4 +70,22 @@ public class PullRequest {
 	public void setReviewComments(int reviewComments) {
 		this.reviewComments = reviewComments;
 	}
+
+	public PullRequestState getState() { return state; }
+
+	public void setState(PullRequestState state) { this.state = state; }
+
+	@Override
+	public String toString() {
+		return title;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof PullRequest) {
+			return ((PullRequest) o).getId() == id;
+		}
+		return false;
+	}
+
 }

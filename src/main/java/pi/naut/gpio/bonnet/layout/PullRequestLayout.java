@@ -11,7 +11,6 @@ import pi.naut.gpio.input.listener.NavigateToLayoutListener;
 import pi.naut.gpio.input.listener.NextStateListener;
 import pi.naut.gpio.input.listener.PreviousStateListener;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.HashMap;
@@ -30,11 +29,6 @@ public class PullRequestLayout implements Layout {
 	private ApplicationEventPublisher applicationEventPublisher;
 
 	public static final String TITLE = "PULL REQUESTS";
-
-	@PostConstruct
-	void initialize() {
-		applicationState.getOpenPullRequests();
-	}
 
 	@Override
 	public boolean isPrimary() { return true; }
