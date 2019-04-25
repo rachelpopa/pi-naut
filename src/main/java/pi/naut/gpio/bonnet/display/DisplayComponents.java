@@ -17,9 +17,10 @@ import java.util.Objects;
 
 import static pi.naut.gpio.bonnet.display.DisplayConstants.*;
 
+// TODO, refactor this into a component builder
+
 @Singleton
 public class DisplayComponents {
-	// TODO, refactor this into a component builder
 
 	@Inject
 	private DisplayController displayController;
@@ -56,22 +57,22 @@ public class DisplayComponents {
 	}
 
 	public void paginatedList(StateList list) {
-		bufferList(list, MIN_XY, true);
+		list(list, MIN_XY, true);
 	}
 
 	public void scrollableList(StateList stateList) {
-		bufferList(stateList, (RADIUS_SELECTED * 2) + (PADDING * 2), false);
+		list(stateList, (RADIUS_SELECTED * 2) + (PADDING * 2), false);
 		if (stateList.hasCurrent()) {
 			controller.getGraphics().circle(RADIUS_SELECTED, 23 + (TEXT_HEIGHT * (stateList.currentIndex() % MAX_ROWS)), 1);
 		}
 	}
 
-	private void bufferList(StateList stateList, int xOffset, boolean paginated) {
+	private void list(StateList stateList, int xOffset, boolean paginated) {
 		if (!stateList.hasCurrent()) {
 			return;
 		}
 
-		int maxPages = (int) Math.ceil((double) stateList.getList().size() / MAX_ROWS);
+		int maxPages = (int) Math.ceil((double) stateList.size() / MAX_ROWS);
 
 		int currentPage = 1;
 		int currentPos = stateList.currentIndex() + 1;
@@ -87,31 +88,31 @@ public class DisplayComponents {
 		}
 
 		int indexOffset = (currentPage - 1) * MAX_ROWS;
-		int itemsRemaining = stateList.getList().size() - ((currentPage - 1) * MAX_ROWS);
+		int itemsRemaining = stateList.size() - ((currentPage - 1) * MAX_ROWS);
 		int maxIndex = itemsRemaining < MAX_ROWS ? itemsRemaining : MAX_ROWS;
 
 		if (stateList.isCircular() || currentPage > 1) {
-			bufferUpArrow();
+			upArrow();
 		}
 		for (int i = 0; i < maxIndex; i++) {
 			controller.getGraphics().text(
 					xOffset,
 					TEXT_HEIGHT + (TEXT_HEIGHT * (i + 1)),
 					new CodePage1252(),     // TODO, use a monospaced font
-					stateList.getList().get(i + indexOffset).toString()
+					stateList.get(i + indexOffset).toString()
 			);
 		}
 		if (stateList.isCircular() || currentPage < maxPages) {
-			bufferDownArrow();
+			downArrow();
 		}
 	}
 
-	private void bufferDownArrow() {
+	private void downArrow() {
 		controller.getGraphics().line(HALF_WIDTH - ARROW_SLOPE, BASE_HEIGHT_ARROW_DOWN, HALF_WIDTH, BASE_HEIGHT_ARROW_DOWN + ARROW_SLOPE);
 		controller.getGraphics().line(HALF_WIDTH, BASE_HEIGHT_ARROW_DOWN + ARROW_SLOPE, HALF_WIDTH + ARROW_SLOPE, BASE_HEIGHT_ARROW_DOWN);
 	}
 
-	private void bufferUpArrow() {
+	private void upArrow() {
 		controller.getGraphics().line(HALF_WIDTH - ARROW_SLOPE, BASE_HEIGHT_ARROW_UP + ARROW_SLOPE, HALF_WIDTH, BASE_HEIGHT_ARROW_UP);
 		controller.getGraphics().line(HALF_WIDTH, BASE_HEIGHT_ARROW_UP, HALF_WIDTH + ARROW_SLOPE, BASE_HEIGHT_ARROW_UP + ARROW_SLOPE);
 	}

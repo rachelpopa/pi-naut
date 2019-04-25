@@ -34,17 +34,18 @@ public class OLEDBonnet {
 		applyGlobalEvents();
 	}
 
-	@EventListener void onStartup(ServiceStartedEvent event) {}
+	@EventListener
+	void onStartup(ServiceStartedEvent serviceStartedEvent) {}
 
 	@EventListener
-	void refreshDisplay(RefreshDisplayEvent refreshDisplayEvent) {
+	void onRefreshDisplay(RefreshDisplayEvent refreshDisplayEvent) {
 		if (layouts.hasCurrent() && refreshDisplayEvent.getSource().contains(layouts.current().getClass().getSimpleName())) {
 			displayController.display(layouts.current());
 		}
 	}
 
 	public void displayLayout(Class layoutClass) {
-		layouts.getList()
+		layouts
 				.stream()
 				.filter(l -> l.getClass().equals(layoutClass))
 				.findAny()
@@ -55,8 +56,9 @@ public class OLEDBonnet {
 		if (layout == null) {
 			return;
 		}
-		displayController.display(layout);
-		applyLayoutEvents(layout);
+		layouts.jumpTo(layout);
+		displayController.display(layouts.current());
+		applyLayoutEvents(layouts.current());
 	}
 
 	private void applyLayoutEvents(Layout layout) {
@@ -74,7 +76,7 @@ public class OLEDBonnet {
 	}
 
 	private void applyGlobalEvents() {
-		// Cycle through primary layoutFactory with the CENTER JOYSTICK
+		// Cycle through primary layouts with the CENTER JOYSTICK
 		pinController.getInputPins().get(PinConfiguration.JOYSTICK_CENTER)
 				.addListener((GpioPinListenerDigital) event -> {
 					if (event.getState().isHigh()) {
@@ -84,7 +86,7 @@ public class OLEDBonnet {
 	}
 
 	private void nextPrimaryLayout() {
-		while (!layouts.next().isPrimary()) ;
+		while (!layouts.next().isPrimary());
 		displayLayout(layouts.current());
 	}
 
