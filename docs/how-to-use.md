@@ -9,16 +9,11 @@ For documentation on how to customize and configure your own project read the **
 
 A `Layout` is an interface that defines the display components and I/O events for a single... layout. It implements:
 
-* An `isPrimary()` flag. If true, primary layouts can be cycled through by pressing the **center joystick**.
+* An `isPrimary()` flag. If true, **primary** layouts can be cycled through by pressing the **center joystick**.
 
 * A `bufferComponents()` method that buffers all the required display components in a builder like fashion.
 
 * The `applyListeners()` and `applyTriggers()` methods which apply layout events to specific pins.
-
-When implementing the `OLEDBonnet` to display layouts, two things will happen when it is displayed:
-
-1. The current state of all display components are **buffered** and **sent** to the display.
-2. All layout events are removed and the new layout events are applied to the pins defined in the layout.
 
 An example **Hello World** layout with some display components and events added to **button A** and **button B**:
 
@@ -62,9 +57,10 @@ public class HelloWorldLayout implements Layout {
 
 }
 ```
+
 Once you create a `Layout` include it in the `layouts` bean defined in the `LayoutFactory`.
 
-__Note:__ Primary layouts will be cycled through in the order they are defined.
+__Note:__ Primary layouts will be cycled through with the **center joystick** in the order they are defined.
 
 __Info:__ Refer to Pi4J docs for creating [listeners](https://pi4j.com/1.2/example/listener.html) and [triggers](https://pi4j.com/1.2/example/trigger.html).
 

@@ -1,6 +1,7 @@
 package util;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public class StateList<T> implements StateIterator<T> {
 
@@ -9,18 +10,36 @@ public class StateList<T> implements StateIterator<T> {
 	private boolean circular = false;
 
 	public StateList(List<T> list) {
-		this.list = list;
 		if (!list.isEmpty()) {
 			this.pos = 0;
 		}
+		this.list = list;
 	}
 
 	public StateList(List<T> list, boolean circular) {
-		this.list = list;
 		if (!list.isEmpty()) {
 			this.pos = 0;
 		}
+		this.list = list;
 		this.circular = circular;
+	}
+
+	public void next(List<T> newList) {
+		pos = getNewPos(newList);
+		list = newList;
+	}
+
+	private int getNewPos(List<T> newList) {
+		int newPos = -1;
+		if (newList == null) {
+			return newPos;
+		}
+		if (newList.stream().anyMatch(current()::equals)) {
+			newPos = newList.indexOf(current());
+		} else if (!list.isEmpty()) {
+			newPos = 0;
+		}
+		return newPos;
 	}
 
 	@Override
@@ -47,9 +66,7 @@ public class StateList<T> implements StateIterator<T> {
 		if (!hasNext()) {
 			return pos;
 		}
-		return isTail()
-				? 0
-				: pos + 1;
+		return isTail() ? 0 : pos + 1;
 	}
 
 	@Override
@@ -94,9 +111,7 @@ public class StateList<T> implements StateIterator<T> {
 		if (!hasPrevious()) {
 			return pos;
 		}
-		return isHead()
-				? list.size() - 1
-				: pos - 1;
+		return isHead() ? list.size() - 1 : pos - 1;
 	}
 
 	@Override
@@ -121,8 +136,24 @@ public class StateList<T> implements StateIterator<T> {
 		list.add(t);
 	}
 
-	public List<T> getList() {
-		return list;
+	public T get(int index) {
+		return list.get(index);
+	}
+
+	public T jumpTo(T item) {
+		int i = list.indexOf(item);
+		if (i > -1 && i != currentIndex()) {
+			pos = i;
+		}
+		return current();
+	}
+
+	public int size() {
+		return list.size();
+	}
+
+	public Stream<T> stream() {
+		return list.stream();
 	}
 
 	public boolean isCircular() {

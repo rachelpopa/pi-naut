@@ -24,7 +24,6 @@ public class DisplayConstants {
 	public static final int BASE_HEIGHT_ARROW_UP = TEXT_HEIGHT + (PADDING * 2);
 	public static final int BASE_HEIGHT_ARROW_DOWN = MAX_Y - ARROW_SLOPE - (PADDING / 2);
 
-	public static final int HEIGHT_BUTTON = 11;
 	public static final int RADIUS_SELECTED = 3;
 
 }
