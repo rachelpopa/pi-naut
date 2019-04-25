@@ -15,7 +15,7 @@ A `Layout` is an interface that defines the display components and I/O events fo
 
 * The `applyListeners()` and `applyTriggers()` methods which apply layout events to specific pins.
 
-An example **Hello World** layout with a display components and events added to **button A** and **button B**:
+An example **Hello World** layout with a display component and events added to **button A** and **button B**:
 
 ```java
 @Singleton
