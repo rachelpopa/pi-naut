@@ -19,7 +19,6 @@ public class ChangeDevlightStateListener implements GpioPinListenerDigital {
 	@Override
 	public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
 		if (event.getState().isHigh()) {
-			System.out.println(devlightStates.current().getDescription());
 			devlightClient.setLightState(devlightStates.current().getLightState());
 		}
 	}
