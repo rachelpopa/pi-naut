@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 
 @Singleton
 public class ApplicationState {
@@ -24,12 +25,12 @@ public class ApplicationState {
 	@Inject
 	private GithubService githubService;
 
-	private StateList<PullRequest> openPullRequests;
-	private StateList<String> runtimeStats;
+	private StateList<PullRequest> openPullRequests = new StateList<>(emptyList());
+	private StateList<String> runtimeStats = new StateList<>(emptyList());
 
 	@PostConstruct
 	void initialize() {
-		openPullRequests = new StateList<>(githubService.getOpenPullRequests());
+		openPullRequests.next(githubService.getOpenPullRequests());
 		runtimeStats = getRuntimeStats();
 	}
 
