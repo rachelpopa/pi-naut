@@ -2,7 +2,7 @@ micronaut:
   application:
     name: pi-naut
   server:
-    port: 8443
+    port: 8008
 
 github:
   user:
