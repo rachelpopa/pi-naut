@@ -3,6 +3,8 @@ package util;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static java.util.Objects.nonNull;
+
 public class StateList<T> implements StateIterator<T> {
 
 	private int pos = -1;
@@ -30,16 +32,13 @@ public class StateList<T> implements StateIterator<T> {
 	}
 
 	private int getNewPos(List<T> newList) {
-		int newPos = -1;
-		if (newList == null) {
-			return newPos;
+		if (newList.isEmpty()) {
+			return -1;
+		} else if (nonNull(current()) && newList.stream().anyMatch(current()::equals)) {
+			return newList.indexOf(current());
+		} else {
+			return 0;
 		}
-		if (newList.stream().anyMatch(current()::equals)) {
-			newPos = newList.indexOf(current());
-		} else if (!list.isEmpty()) {
-			newPos = 0;
-		}
-		return newPos;
 	}
 
 	@Override
