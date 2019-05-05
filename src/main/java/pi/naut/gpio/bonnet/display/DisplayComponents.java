@@ -33,7 +33,7 @@ public class DisplayComponents {
 	}
 
 	public void startupScreen() {
-		controller.getGraphics().text(42, MIN_XY, new CodePage1252(), "PI-NAUT");
+		controller.getGraphics().text(0, MIN_XY, new CodePage1252(), "PIKACHU GITHUB HELPER");
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			InputStream resourceAsStream = classLoader.getResourceAsStream("raspberry.png");
