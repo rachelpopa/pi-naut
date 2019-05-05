@@ -3,6 +3,7 @@ package pi.naut.gpio.bonnet.display;
 import io.micronaut.core.util.StringUtils;
 import net.fauxpark.oled.SSD1306;
 import net.fauxpark.oled.font.CodePage1252;
+import pi.naut.github.model.PikachuMood;
 import pi.naut.gpio.controller.DisplayController;
 import util.StateList;
 
@@ -42,6 +43,22 @@ public class DisplayComponents {
 			e.printStackTrace();
 		}
 		controller.getGraphics().text(21, MAX_Y - FONT_HEIGHT, new CodePage1252(), "PRESS JOYSTICK");
+	}
+	
+	public void pikachuScreen(PikachuMood pikachuMood) {
+		controller.getGraphics().text(70, MIN_XY, new CodePage1252(), "PIKACHU");
+		showPikachu(pikachuMood.getNextImage());
+	}
+
+	public void showPikachu (String pikachuImage) {
+		try {
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			InputStream resourceAsStream = classLoader.getResourceAsStream(pikachuImage);
+			BufferedImage bufferedImage = ImageIO.read(Objects.requireNonNull(resourceAsStream));
+			controller.getGraphics().image(bufferedImage, MIN_XY, MIN_XY, 63, 63);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void titleBar(String title) {
