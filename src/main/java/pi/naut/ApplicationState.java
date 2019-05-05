@@ -53,7 +53,7 @@ public class ApplicationState {
 	@Scheduled(fixedRate = "1s")
 	void updatePikachuMood() {
 		// pikachuMood = pikachuMood.equals("pikachu-happy-0.png") ? "pikachu-happy-1.png" : "pikachu-happy-0.png";
-		pikachuMood = PikachuMood.HAPPY;
+		pikachuMood = PikachuMood.SICK;
 		applicationEventPublisher.publishEvent(new RefreshDisplayEvent(PikachuLayout.class));
 	}
 
