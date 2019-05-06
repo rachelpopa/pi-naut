@@ -3,6 +3,7 @@ package pi.naut;
 import io.micronaut.context.event.ApplicationEventPublisher;
 import io.micronaut.scheduling.annotation.Scheduled;
 import pi.naut.github.GithubService;
+import pi.naut.github.PikachuService;
 import pi.naut.github.model.PikachuMood;
 import pi.naut.github.model.PullRequest;
 import pi.naut.gpio.bonnet.display.RefreshDisplayEvent;
@@ -26,6 +27,8 @@ public class ApplicationState {
 	private ApplicationEventPublisher applicationEventPublisher;
 	@Inject
 	private GithubService githubService;
+	@Inject
+	private PikachuService pikachuService;
 
 	private StateList<PullRequest> openPullRequests = new StateList<>(emptyList());
 	private StateList<String> runtimeStats = new StateList<>(emptyList());
@@ -39,6 +42,7 @@ public class ApplicationState {
 
 	@Scheduled(fixedRate = "1m")
 	void updatePullRequests() {
+		System.out.println(githubService.getOpenPullRequests());
 		openPullRequests.next(githubService.getOpenPullRequests());
 		applicationEventPublisher.publishEvent(new RefreshDisplayEvent(PullRequestLayout.class, PullRequestDetailsLayout.class));
 	}
@@ -52,8 +56,7 @@ public class ApplicationState {
 
 	@Scheduled(fixedRate = "1s")
 	void updatePikachuMood() {
-		// pikachuMood = pikachuMood.equals("pikachu-happy-0.png") ? "pikachu-happy-1.png" : "pikachu-happy-0.png";
-		pikachuMood = PikachuMood.SICK;
+		pikachuMood = pikachuService.getPikachuMood(openPullRequests.size());
 		applicationEventPublisher.publishEvent(new RefreshDisplayEvent(PikachuLayout.class));
 	}
 

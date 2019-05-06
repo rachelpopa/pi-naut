@@ -27,8 +27,8 @@ class LayoutFactory {
 	private RuntimeStatsLayout runtimeStatsLayout;
 	// @Inject
 	// private PullRequestDetailsLayout pullRequestDetailsLayout;
-	@Inject
-	private HelloWorldLayout helloWorldLayout;
+	// @Inject
+	// private HelloWorldLayout helloWorldLayout;
 	@Inject
 	private PikachuLayout pikachuLayout;
 
@@ -41,7 +41,7 @@ class LayoutFactory {
 				runtimeStatsLayout,
 				pullRequestLayout,
 				// pullRequestDetailsLayout,
-				helloWorldLayout,
+				// helloWorldLayout,
 				pikachuLayout
 		), true);
 	}
