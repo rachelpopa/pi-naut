@@ -4,6 +4,7 @@ import io.micronaut.core.util.StringUtils;
 import net.fauxpark.oled.SSD1306;
 import net.fauxpark.oled.font.CodePage1252;
 import pi.naut.github.model.PikachuMood;
+import pi.naut.github.model.PullRequest;
 import pi.naut.gpio.controller.DisplayController;
 import util.StateList;
 
@@ -45,8 +46,10 @@ public class DisplayComponents {
 		controller.getGraphics().text(21, MAX_Y - FONT_HEIGHT, new CodePage1252(), "PRESS JOYSTICK");
 	}
 	
-	public void pikachuScreen(PikachuMood pikachuMood) {
-		controller.getGraphics().text(70, MIN_XY, new CodePage1252(), "PIKACHU");
+	public void pikachuScreen(PikachuMood pikachuMood, StateList<PullRequest> openPullRequests) {
+		controller.getGraphics().text(69, MIN_XY, new CodePage1252(), "PIKACHU IS");
+		controller.getGraphics().text(69, 12, new CodePage1252(), pikachuMood.getDisplayText());
+		controller.getGraphics().text(69, 28, new CodePage1252(), "#ofPRs: " + openPullRequests.size());
 		showPikachu(pikachuMood.getNextImage());
 	}
 

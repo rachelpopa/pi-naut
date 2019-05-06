@@ -38,11 +38,11 @@ class LayoutFactory {
 	StateList<Layout> layouts() {
 		return new StateList<>(asList(
 				welcomeLayout,
-				runtimeStatsLayout,
+				pikachuLayout,
 				pullRequestLayout,
+				runtimeStatsLayout
 				// pullRequestDetailsLayout,
-				// helloWorldLayout,
-				pikachuLayout
+				// helloWorldLayout
 		), true);
 	}
 

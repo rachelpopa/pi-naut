@@ -31,7 +31,7 @@ public class PikachuLayout implements Layout {
 
 	@Override
 	public void bufferComponents() {
-		displayComponents.pikachuScreen(applicationState.getPikachuMood());
+		displayComponents.pikachuScreen(applicationState.getPikachuMood(), applicationState.getOpenPullRequests());
 	}
 
 	@Override

@@ -42,7 +42,6 @@ public class ApplicationState {
 
 	@Scheduled(fixedRate = "1m")
 	void updatePullRequests() {
-		System.out.println(githubService.getOpenPullRequests());
 		openPullRequests.next(githubService.getOpenPullRequests());
 		applicationEventPublisher.publishEvent(new RefreshDisplayEvent(PullRequestLayout.class, PullRequestDetailsLayout.class));
 	}
