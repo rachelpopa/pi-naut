@@ -1,9 +1,9 @@
 micronaut:
   application:
-    name: pi-naut
+    name: pikachu-github-helper
   server:
     port: 8008
 
 github:
   user: rachelpopa
-  token: 
+  token:
